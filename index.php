@@ -129,7 +129,7 @@ switch (ENVIRONMENT)
  *
  * NO TRAILING SLASH!
  */
-	$view_folder = '';
+	$view_folder = dirname(__FILE__).DIRECTORY_SEPARATOR.'public'.DIRECTORY_SEPARATOR.'themes';
 
 
 /*

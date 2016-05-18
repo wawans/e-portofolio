@@ -265,10 +265,10 @@
 }
 }
 @mixin offset($num) {
-  margin-left: calc((100%/$grid-columns*$num) + (($grid-gutter/10)+0em)/2);
+  margin-left: calc((100%/#{$grid-columns}*#{$num}) + ((#{$grid-gutter}/10)+0em)/2);
 }
 @mixin col($num) {
-  width: (100%/$grid-columns*$num) * 1%;
+  width: (100%/$grid-columns*$num);
 }
 @mixin col-fixed($width) {
   -webkit-flex: 0 0 $width;

@@ -6,7 +6,7 @@ class Daftar extends CI_Controller {
     public function __construct() 
     {
         parent::__construct();
-        $this->load->library(array('form_validation'));
+        $this->load->library('form_validation');
     }
 
 	/**
@@ -46,14 +46,52 @@ class Daftar extends CI_Controller {
 
     }
 
-    public function check_username($name)
+    public function check_username($var = NULL)
     {
+        if (!isset($var) && $this->input->is_ajax_request())
+        {
+            // Cek username via ajax, not callback;
+            $this->form_validation->set_rules('username', 'Username', 'required|trim|xss_clean|min_length[4]|max_length[75]');
+            if ($this->form_validation->run() === FALSE)
+            {
+                $eror = $this->form_validation->error_array();
+                $code['return'] = "01";
+                echo json_encode(array_merge($code,$eror));
+            }
+            else
+            {
 
+            }
+            exit;
+        }
+        else
+        {
+
+        }
     }
 
-    public function check_email($mail)
+    public function check_email($var = NULL)
     {
+        if (!isset($var) && $this->input->is_ajax_request())
+        {
+            // Cek username via ajax, not callback;
+            $this->form_validation->set_rules('username', 'Username', 'required|trim|xss_clean|min_length[4]|max_length[75]');
+            if ($this->form_validation->run() === FALSE)
+            {
+                $eror = $this->form_validation->error_array();
+                $code['return'] = "01";
+                echo json_encode(array_merge($code,$eror));
+            }
+            else
+            {
 
+            }
+            exit;
+        }
+        else
+        {
+
+        }
     }
 
 }

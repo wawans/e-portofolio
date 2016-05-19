@@ -36,4 +36,9 @@
     </form>
 	</column>	
 	</row>
+
+<?php
+$bytes = random_bytes(9);
+echo var_dump($bytes);
+echo var_dump(bin2hex($bytes)); ?>
 	

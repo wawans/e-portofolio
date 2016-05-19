@@ -12,7 +12,15 @@
     <link rel="author" href="https://plus.google.com/u/0/107005047094195947572"/>
     <link rel="publisher" href="https://plus.google.com/u/0/107005047094195947572"/>
     <link rel="icon" type="image/x-icon" href="favicon.ico" />
-    <link rel="stylesheet" type="text/css" href="<?= theme_url(); ?>/css/style.css" media="screen">
+    <!link rel="stylesheet" type="text/css" href="<?= theme_url(); ?>/css/style.css" media="screen">
+    <link rel="stylesheet/less" type="text/css" href="<?= theme_url(); ?>/less/kube.less" />
+    <script>
+        less = {
+            env: "development"
+        };
+    </script>
+    <script src="<?= theme_url(); ?>/js/less.min.js" type="text/javascript"></script>
+
     <script type="text/javascript" src="<?= theme_url(); ?>/js/jquery-2.2.2.min.js"></script>
 </head>
 <body>

@@ -1,44 +1,27 @@
-<row>
-</row>
-<row centered>
- <column cols="12">
-<form class="forms">
-    <fieldset>
-    <legend>Login data</legend>
-    <section>
-    <label>Email</label>
-    <input type="email" name="user-email" class="width-6" />
-    </section>
-    <section>
+<form method="post" action="<?php echo site_url('user/daftar/set_user');?>">
+    <label>Username</label>
+    <input type="text" name="username" class="width-6" />
     <label>Password</label>
-    <input type="password" name="user-password" class="width-6" />
-    </section>
-	<input type="submit" class="btn" value="Submit" />
-    </fieldset>
-    </form>
-	</column>	
-	</row>
-    <row centered>
- <column cols="12">
-<form class="forms">
-    <fieldset>
-    <legend>Login data</legend>
-    <section>
-    <label>Email</label>
-    <input type="email" name="user-email" class="width-6" />
-    </section>
-    <section>
-    <label>Password</label>
-    <input type="password" name="user-password" class="width-6" />
-    </section>
-	<input type="submit" class="btn" value="Submit" />
-    </fieldset>
-    </form>
-	</column>	
-	</row>
+    <input type="password" name="password" class="width-6" />
+    <label>Conf</label>
+    <input type="password" name="passconf" class="width-6" />
 
-<?php
-$bytes = random_bytes(9);
-echo var_dump($bytes);
-echo var_dump(bin2hex($bytes)); ?>
-	
+    <label>Nama Awal</label>
+    <input type="text" name="nama_awal" class="width-6" />
+    <label>Nama Ahir</label>
+    <input type="text" name="nama_akhir" class="width-6" />
+
+    <label>Email</label>
+    <input type="email" name="email" class="width-6" />
+
+    <input type="submit" class="btn" value="Submit" />
+</form>
+<hr />
+<form method="post" action="<?php echo site_url('user/masuk/post');?>">
+    <label>Username</label>
+    <input type="text" name="username" class="width-6" />
+    <label>Password</label>
+    <input type="password" name="password" class="width-6" />
+    
+    <input type="submit" class="btn" value="Submit" />
+</form>

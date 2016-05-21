@@ -12,7 +12,7 @@
     <link rel="author" href="https://plus.google.com/u/0/107005047094195947572"/>
     <link rel="publisher" href="https://plus.google.com/u/0/107005047094195947572"/>
     <link rel="icon" type="image/x-icon" href="favicon.ico" />
-    <link rel="stylesheet" type="text/css" href="<?= theme_url(); ?>/css/build-full.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="<?= theme_url(); ?>/css/kube.css" media="screen">
     <script type="text/javascript" src="<?= theme_url(); ?>/js/jquery-2.2.2.min.js"></script>
 </head>
 <body>

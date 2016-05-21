@@ -55,10 +55,10 @@ class Kelas_model extends CI_Model {
     public function create()
     {
         $this->load->library('session');        
-        if (!$this->session->userdata('uuid')) exit;
+        if (!$this->session->has_userdata('uuid')) exit;
         
         $this->load->model('user_model');        
-        $this->kd_user = $this->user_model->get_kd_user($this->session->userdata('uuid'));
+        $this->kd_user = $this->user_model->get_kd_user($this->session->uuid);
         
         $this->maks = $this->input->post('maks');
         $this->nm_kelas = $this->input->post('nama');
@@ -88,10 +88,10 @@ class Kelas_model extends CI_Model {
     public function join()
     {
         $this->load->library('session');
-        if (!$this->session->userdata('uuid')) exit;
+        if (!$this->session->has_userdata('uuid')) exit;
 
         $this->load->model('user_model');
-        $this->kd_user = $this->user_model->get_kd_user($this->session->userdata('uuid'));
+        $this->kd_user = $this->user_model->get_kd_user($this->session->uuid);
         
         $this->kd_uuid = $this->input->post('kode');
         if ($this->check_uuid() !== true)

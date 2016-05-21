@@ -4,6 +4,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class Kelompok_model extends CI_Model {
     private $kd_kelompok;
     private $kd_uuid;
+    private $kd_kelas;
     private $kd_user;
     public $nm_kelompok;
     public $maks;
@@ -46,19 +47,30 @@ class Kelompok_model extends CI_Model {
             ->get('kelompok_ref')->row()->kd_kelompok;
     }
 
+    public function get_kd_kelas($uuid)
+    {
+        return $this->db->select('kd_kelas')
+            ->where('kd_uuid',$uuid)
+            ->limit(1)
+            ->get('kelompok_ref')->row()->kd_kelas;
+    }
+
     public function check_uuid()
     {
         $query = $this->db->select('kd_uuid')->get_where('kelompok_ref',array('kd_uuid'=>$this->kd_uuid),1);
         return ($query->num_rows() > 0) ? true : false;
     }
 
-    public function create()
+    public function create($kelas_uuid)
     {
         $this->load->library('session');
-        if (!$this->session->userdata('uuid')) exit;
+        if (!$this->session->has_userdata('uuid')) exit;
 
         $this->load->model('user_model');
-        $this->kd_user = $this->user_model->get_kd_user($this->session->userdata('uuid'));
+        $this->kd_user = $this->user_model->get_kd_user($this->session->uuid);
+
+        $this->load->model('kelas_model');
+        $this->kd_kelas = $this->kelas_model->get_kd_kelas($kelas_uuid);
 
         $this->maks = $this->input->post('maks');
         $this->nm_kelompok = $this->input->post('nama');
@@ -67,6 +79,7 @@ class Kelompok_model extends CI_Model {
         $ref = array(
             'kd_kelompok' => $this->kd_kelompok,
             'kd_uuid' => $this->kd_uuid,
+            'kd_kelas' => $this->kd_kelas,
             'kd_user' => $this->kd_user,
             'nm_kelompok' => $this->nm_kelompok,
             'maks' => $this->maks,
@@ -75,6 +88,7 @@ class Kelompok_model extends CI_Model {
         );
         $kelompok = array(
             'kd_kelompok' => $this->kd_kelompok,
+            'kd_kelas' => $this->kd_kelas,
             'kd_user' => $this->kd_user,
             'tgl_join' => $this->today
         );
@@ -88,10 +102,10 @@ class Kelompok_model extends CI_Model {
     public function join()
     {
         $this->load->library('session');
-        if (!$this->session->userdata('uuid')) exit;
+        if (!$this->session->has_userdata('uuid')) exit;
 
         $this->load->model('user_model');
-        $this->kd_user = $this->user_model->get_kd_user($this->session->userdata('uuid'));
+        $this->kd_user = $this->user_model->get_kd_user($this->session->uuid);
 
         $this->kd_uuid = $this->input->post('kode');
         if ($this->check_uuid() !== true)
@@ -99,6 +113,7 @@ class Kelompok_model extends CI_Model {
             return 'Invalid Code!';
         }
         $this->kd_kelompok = $this->get_kd_kelompok($this->kd_uuid);
+        $this->kd_kelas = $this->get_kd_kelas($this->kd_uuid);
 
         $query = $this->db->select('r.kd_kelompok')
             ->distinct()
@@ -112,6 +127,7 @@ class Kelompok_model extends CI_Model {
         {
             $kelompok = array(
                 'kd_kelompok' => $this->kd_kelompok,
+                'kd_kelas' => $this->kd_kelas,
                 'kd_user' => $this->kd_user,
                 'tgl_join' => $this->today
             );

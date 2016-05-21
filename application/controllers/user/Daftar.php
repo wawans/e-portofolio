@@ -15,8 +15,10 @@ class Daftar extends CI_Controller {
 	 */
 	public function index($user = 'siswa')
 	{
-        $data=array();
-        $this->load->view('Daftar_'.$user,$data);
+        $data['user']=$user;
+        $this->load->view('header',$data);
+        $this->load->view('nav-top',$data);
+        $this->load->view('signup',$data);
 	}
 
     public function set_user()

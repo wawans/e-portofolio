@@ -16,6 +16,7 @@ class Masuk extends CI_Controller {
 	public function index()
 	{
         $data=array();
+        $this->load->view('nav-top',$data);
         $this->load->view('Masuk',$data);
 	}
 

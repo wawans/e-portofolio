@@ -75,6 +75,7 @@ DROP TABLE IF EXISTS `kelompok_ref`;
 CREATE TABLE `kelompok_ref` (
   `kd_kelompok` char(9) NOT NULL,
   `kd_uuid` char(9) NOT NULL,
+  `kd_kelas` char(9) NOT NULL,
   `kd_user` char(9) NOT NULL,
   `nm_kelompok` varchar(125) NOT NULL,
   `maks` int(11) NOT NULL DEFAULT '0',

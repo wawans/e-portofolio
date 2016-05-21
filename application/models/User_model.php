@@ -61,6 +61,7 @@ class User_model extends CI_Model {
             {
                 $this->upass = $uname->row()->upass;
                 $this->usalt = $uname->row()->usalt;
+                $this->kd_uuid = $uname->row()->kd_uuid;
                 return true;
             }
             else

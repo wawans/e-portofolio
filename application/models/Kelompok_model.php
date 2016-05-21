@@ -31,12 +31,39 @@ class Kelompok_model extends CI_Model {
             ->order_by('kd_kelompok', 'DESC')
             ->limit(1)
             ->get('kelompok_ref');
-        $this->kd_user = ($last->num_rows() < 1) ? $date.'000' : sprintf("%09d",($last->row()->kd_kelompok+1));
+        $this->kd_kelompok = ($last->num_rows() < 1) ? $date.'000' : sprintf("%09d",($last->row()->kd_kelompok+1));
     }
 
     private function gen_kd_uuid()
     {
         $this->kd_uuid = $this->app->gen_uuid();
+    }
+
+    public function get_all()
+    {
+        return $this->db->select('kelas_ref.kd_uuid,
+kelas_ref.nm_kelas,
+kelompok_ref.kd_uuid kl_uuid,
+kelompok_ref.nm_kelompok,
+klm.cnt,
+IFNULL(kelompok_ref.maks,0) maks,
+`profile`.nm_awal,
+`profile`.nm_akhir')
+            ->distinct()
+            ->from('kelas_ref')
+            ->join('kelompok_ref','kelas_ref.kd_kelas = kelompok_ref.kd_kelas','left')
+            ->join('profile','kelompok_ref.kd_user = profile.kd_user','left')
+            ->join('(SELECT
+klk.kd_kelompok AS kd_pok,
+klk.kd_kelas AS kd_las,
+Count(klk.kd_user) AS cnt
+FROM
+kelompok AS klk
+GROUP BY
+klk.kd_kelompok,
+klk.kd_kelas
+) klm','klm.kd_pok = kelompok_ref.kd_kelompok','left')
+            ->get()->result();
     }
 
     public function get_kd_kelompok($uuid)
@@ -61,8 +88,10 @@ class Kelompok_model extends CI_Model {
         return ($query->num_rows() > 0) ? true : false;
     }
 
-    public function create($kelas_uuid)
+    public function create($kelas_uuid=null)
     {
+        $kelas_uuid = (!isset($kelas_uuid)) ? $this->input->post('kelas') : $kelas_uuid;
+
         $this->load->library('session');
         if (!$this->session->has_userdata('uuid')) exit;
 
@@ -71,7 +100,14 @@ class Kelompok_model extends CI_Model {
 
         $this->load->model('kelas_model');
         $this->kd_kelas = $this->kelas_model->get_kd_kelas($kelas_uuid);
-
+        if ($this->kelas_model->is_joined($this->kd_kelas,$this->kd_user) !== true)
+        {
+            return 'Anda Tidak Terdaftar Anggota Kelas!';
+        }
+        if ($this->is_joined($this->kd_kelas,$this->kd_user) == true)
+        {
+            return 'Anda Sudah Memiliki Kelompok!';
+        }
         $this->maks = $this->input->post('maks');
         $this->nm_kelompok = $this->input->post('nama');
         $this->gen_kd_kelompok();
@@ -96,7 +132,23 @@ class Kelompok_model extends CI_Model {
         $this->db->insert('kelompok_ref',$ref);
         $this->db->insert('kelompok',$kelompok);
         $this->db->trans_complete();
-        return true;
+        return array(
+            'msg' => 'ok',
+            'uuid' => $this->kd_uuid
+        );
+    }
+
+    // joinable jika ada kuota sisa;
+    public function is_joinable($kelompok_uuid)
+    {
+
+    }
+
+    public function is_joined($kd_kelas,$kd_user)
+    {
+        $query = $this->db->select('kd_user')
+            ->get_where('kelompok',array('kd_kelas'=>$kd_kelas,'kd_user'=>$kd_user),1);
+        return ($query->num_rows() > 0) ? true : false;
     }
 
     public function join()

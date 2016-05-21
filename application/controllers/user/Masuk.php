@@ -40,6 +40,7 @@ class Masuk extends CI_Controller {
                     'uuid' => $data['uuid'],
                     'token' => md5(microtime())
                 ));
+                if (!$this->input->is_ajax_request()) redirect(site_url('home/index/?uuid='.$data['uuid']));
                 $code['return'] = "00"; // Accepted
                 echo json_encode($code);
                 exit;

@@ -8,6 +8,8 @@ class Kelas extends CI_Controller {
     {
         parent::__construct();
         $this->load->library('session');
+        $this->load->model('user_model');
+        $this->data['profile'] = $this->user_model->get_profil($this->session->uuid);
     }
 
 	/**
@@ -18,8 +20,10 @@ class Kelas extends CI_Controller {
 	{
         $this->get_all_kelas(true);
         $this->load->view('header',$this->data);
+        $this->load->view('menu',$this->data);
         $this->load->view('nav-top',$this->data);
         $this->load->view('Kelas',$this->data);
+        $this->load->view('footer',$this->data);
 	}
 
     public function get_all_kelas($local = false)

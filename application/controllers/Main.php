@@ -14,8 +14,7 @@ class Main extends CI_Controller {
 	{
         $data=array();
         $this->load->view('header',$data);
-        $this->load->view('nav-top',$data);
-        $this->load->view('index',$data);
+        $this->load->view('login',$data);
         $this->load->view('footer',$data);
 	}
 }

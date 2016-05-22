@@ -155,7 +155,7 @@ class User_model extends CI_Model {
                     ->from('user u')
                     ->join('profile p','p.kd_user = u.kd_user')
                     ->where('u.kd_uuid',$uuid)
-                    ->limit(1)
+                    ->limit(1)->get()
                 ;
         return ($query->num_rows() > 0) ? $query->row() : false;
     }

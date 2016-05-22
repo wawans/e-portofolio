@@ -8,4 +8,4 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 |
 |
 */
-$config['theme'] = 'default/';
+$config['theme'] = 'gentelella/';

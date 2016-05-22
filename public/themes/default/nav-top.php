@@ -21,6 +21,7 @@
                     </li>
                     <li class="active"><a href="<?php echo site_url(''); ?>">Tugas</a></li>
                     <li class="active"><a href="<?php echo site_url(''); ?>">Nilai</a></li>
+                    <li><a href="#"><?php echo $this->session->name; ?></a></li>
                 </ul>
             </div>
         </div>

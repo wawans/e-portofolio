@@ -54,7 +54,9 @@ class User_model extends CI_Model {
     {
         $uname = $this->db->select('kd_uuid,upass,usalt')
             ->distinct()
-            ->get_where('user',array('uname'=>$this->uname),1);
+            ->where("BINARY uname=".$this->db->escape($this->uname),NULL,FALSE)
+            ->limit(1)
+            ->get('user');
         if ($uname->num_rows() > 0)
         {
             if ($set == true)
@@ -129,12 +131,12 @@ class User_model extends CI_Model {
             }
             else
             {
-                return 'Password Tidak Sesuai!';
+                return 'Username & Password Tidak Sesuai!';
             }
         }
         else
         {
-            return 'Username Tidak Terdaftar';
+            return 'Username & Password Tidak Sesuai!';
         }
     }
 

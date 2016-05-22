@@ -38,7 +38,8 @@ class Masuk extends CI_Controller {
                 $this->load->library('session');
                 $this->session->set_userdata(array(
                     'uuid' => $data['uuid'],
-                    'token' => md5(microtime())
+                    'token' => md5(microtime()),
+                    'name' => $this->input->post('username')
                 ));
                 if (!$this->input->is_ajax_request()) redirect(site_url('home/index/?uuid='.$data['uuid']));
                 $code['return'] = "00"; // Accepted

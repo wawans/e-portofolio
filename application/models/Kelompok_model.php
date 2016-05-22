@@ -88,6 +88,12 @@ klk.kd_kelas
         return ($query->num_rows() > 0) ? true : false;
     }
 
+    public function check_uuid_exist($uuid)
+    {
+        $this->kd_uuid = $uuid;
+        return $this->check_uuid();
+    }
+
     public function create($kelas_uuid=null)
     {
         $kelas_uuid = (!isset($kelas_uuid)) ? $this->input->post('kelas') : $kelas_uuid;
@@ -138,6 +144,23 @@ klk.kd_kelas
         );
     }
 
+    private function common_init($kelompok_uuid=null)
+    {
+        $this->load->library('session');
+        if (!$this->session->has_userdata('uuid')) exit('Please, Login To Continue.');
+
+        $this->load->model('user_model');
+        $this->kd_user = $this->user_model->get_kd_user($this->session->uuid);
+
+        $this->kd_uuid = (isset($kelompok_uuid)) ? $kelompok_uuid : $this->input->post('kode');
+        if ($this->check_uuid() !== true)
+        {
+            return 'Invalid Code!';
+        }
+        $this->kd_kelompok = $this->get_kd_kelompok($this->kd_uuid);
+        $this->kd_kelas = $this->get_kd_kelas($this->kd_uuid);
+    }
+
     // joinable jika ada kuota sisa;
     public function is_joinable($kelompok_uuid)
     {
@@ -146,27 +169,26 @@ klk.kd_kelas
 
     public function is_joined($kd_kelas,$kd_user)
     {
-        $query = $this->db->select('kd_user')
-            ->get_where('kelompok',array('kd_kelas'=>$kd_kelas,'kd_user'=>$kd_user),1);
+        $query = $this->db->select('kd_kelompok')
+            ->from('kelompok')
+            ->where('kd_kelas',$kd_kelas)
+            ->where('kd_user',$kd_user)
+            ->get();
         return ($query->num_rows() > 0) ? true : false;
     }
 
-    public function join()
+    public function join($kelompok_uuid=null)
     {
-        $this->load->library('session');
-        if (!$this->session->has_userdata('uuid')) exit;
-
-        $this->load->model('user_model');
-        $this->kd_user = $this->user_model->get_kd_user($this->session->uuid);
-
-        $this->kd_uuid = $this->input->post('kode');
-        if ($this->check_uuid() !== true)
+        $this->common_init($kelompok_uuid);
+        $this->load->model('kelas_model');
+        if ($this->kelas_model->is_joined($this->kd_kelas,$this->kd_user) !== true)
         {
-            return 'Invalid Code!';
+            return 'Anda Tidak Terdaftar Anggota Kelas!';
         }
-        $this->kd_kelompok = $this->get_kd_kelompok($this->kd_uuid);
-        $this->kd_kelas = $this->get_kd_kelas($this->kd_uuid);
-
+        if ($this->is_joined($this->kd_kelas,$this->kd_user))
+        {
+            return 'Anda Sudah Memiliki Kelompok!';
+        }
         $query = $this->db->select('r.kd_kelompok')
             ->distinct()
             ->from('kelompok k')
@@ -174,7 +196,7 @@ klk.kd_kelas
             ->where('r.kd_uuid',$this->kd_uuid)
             ->where('k.kd_user',$this->kd_user)
             ->limit(1)
-        ;
+            ->get();
         if ($query->num_rows() < 1)
         {
             $kelompok = array(
@@ -188,9 +210,50 @@ klk.kd_kelas
         }
         else
         {
-            return 'Anda Sudah Terdaftar!';
+            return 'Anda Sudah Menjadi Anggota!';
         }
     }
+
+    public function join_out($kelompok_uuid=null)
+    {
+        $this->common_init($kelompok_uuid);
+
+        $query = $this->db->select('kd_kelompok')
+            ->distinct()
+            ->from('kelompok_ref')
+            ->where('kd_kelompok',$this->kd_kelompok)
+            ->where('kd_user',$this->kd_user)
+            ->limit(1)
+            ->get();
+
+        if ($query->num_rows() < 1)
+        {
+            $query = $this->db->select('kd_kelompok')
+                ->distinct()
+                ->from('kelompok')
+                ->where('kd_kelompok',$this->kd_kelompok)
+                ->where('kd_user',$this->kd_user)
+                ->limit(1)
+                ->get();
+            if ($query->num_rows() > 0)
+            {
+                $this->db
+                    ->where('kd_kelompok',$this->kd_kelompok)
+                    ->where('kd_user',$this->kd_user)
+                    ->delete('kelompok');
+                return true;
+            }
+            else
+            {
+                return 'Anda Tidak Terdaftar di Kelompok Ini!';
+            }
+        }
+        else
+        {
+            return 'Gagal! Kelompok Ini Butuh Anda (Owner)!';
+        }
+    }
+
 
     public function update()
     {

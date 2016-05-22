@@ -17,7 +17,7 @@ class Daftar extends CI_Controller {
 	{
         $data['user']=$user;
         $this->load->view('header',$data);
-        $this->load->view('nav-top',$data);
+        //$this->load->view('nav-top',$data);
         $this->load->view('signup',$data);
 	}
 

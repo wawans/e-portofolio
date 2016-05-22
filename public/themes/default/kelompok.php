@@ -102,7 +102,7 @@
             <div class="col content">
                 <div class="col panel width-1of2 center mobile-width-fill">
                     <div class="header">
-                        Edit kelas &mdash; <em>Manual</em>
+                        Edit kelompok &mdash; <em>Manual</em>
                     </div>
                     <div class="body">
                         <div class="cell">
@@ -112,7 +112,7 @@
                                         <div class="col">
                                             <div class="col width-1of4">
                                                 <div class="cell">
-                                                    <label>Kode Kelas</label>
+                                                    <label>Kode Kelompok</label>
                                                 </div>
                                             </div>
                                             <div class="col width-fill">
@@ -124,7 +124,7 @@
                                         <div class="col">
                                             <div class="col width-1of4">
                                                 <div class="cell">
-                                                    <label>Nama Kelas</label>
+                                                    <label>Nama Kelompok</label>
                                                 </div>
                                             </div>
                                             <div class="col width-fill">
@@ -141,7 +141,7 @@
                                             </div>
                                             <div class="col width-fill">
                                                 <div class="cell">
-                                                    <input name="maks" type="number" class="text" value="50">
+                                                    <input name="maks" type="number" class="text" value="5">
                                                 </div>
                                             </div>
                                         </div>

@@ -7,6 +7,7 @@ class Kelompok extends CI_Controller {
     public function __construct() 
     {
         parent::__construct();
+        $this->load->library('session');
     }
 
 	/**
@@ -87,7 +88,60 @@ class Kelompok extends CI_Controller {
 
     }
 
-    public function check_kelas_uuid_exist($uuid = NULL)
+    public function check_uuid_exist($uuid = NULL)
+    {
+        $this->load->library('form_validation');
+        if (!$this->input->is_ajax_request())
+        {
+            $this->form_validation->set_data(array('kode'=>$uuid));
+        }
+        $this->form_validation->set_rules('kode', 'Kode Kelompok', 'required|trim|exact_length[9]');
+        if ($this->form_validation->run() === FALSE)
+        {
+            if ($this->input->is_ajax_request())
+            {
+                $eror = $this->form_validation->error_array();
+                $code['return'] = "01";
+                echo json_encode(array_merge($code,$eror));
+                exit;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        elseif (!isset($uuid))
+        {
+            $this->check_uuid_exist($this->input->post('kode'));
+        }
+        elseif (isset($uuid))
+        {
+            $this->load->model('kelompok_model');
+            $data = $this->kelompok_model->check_uuid_exist($uuid);
+            if ($data===true && $this->input->is_ajax_request())
+            {
+                echo json_encode(array('return' => '00'));
+                exit;
+            }
+            else
+            {
+                if ($data===true)
+                {
+                    return true;
+                }
+                else
+                {
+                    $this->form_validation->set_message('check_uuid_exist', 'The {field} value is not exist');
+                    return false;
+                }
+            }
+        }
+        else
+        {
+            return false;
+        }
+    }
+public function check_kelas_uuid_exist($uuid = NULL)
     {
         $this->load->library('form_validation');
         if (!$this->input->is_ajax_request())
@@ -111,7 +165,7 @@ class Kelompok extends CI_Controller {
         }
         elseif (!isset($uuid))
         {
-            $this->check_uuid_exist($this->input->post('kelas'));
+            $this->check_kelas_uuid_exist($this->input->post('kelas'));
         }
         elseif (isset($uuid))
         {

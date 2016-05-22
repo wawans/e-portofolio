@@ -368,10 +368,10 @@ $config['encryption_key'] = 'leaveItBlank';
 |
 */
 $config['sess_driver'] = 'files';
-$config['sess_cookie_name'] = 'eports';
+$config['sess_cookie_name'] = 'eports_'.hash('md4',$config['encryption_key']);
 $config['sess_expiration'] = 7200;
 $config['sess_save_path'] = APPPATH.'cache'.DIRECTORY_SEPARATOR;
-$config['sess_match_ip'] = TRUE;
+$config['sess_match_ip'] = FALSE;
 $config['sess_time_to_update'] = 300;
 $config['sess_regenerate_destroy'] = FALSE;
 

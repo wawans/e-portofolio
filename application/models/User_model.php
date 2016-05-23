@@ -152,7 +152,7 @@ class User_model extends CI_Model {
 
     public function get_profil($uuid)
     {
-        $query = $this->db->select('p.nm_awal,p.nm_akhir,p.email,p.act')
+        $query = $this->db->select('u.kd_user,u.kd_uuid,p.nm_awal,p.nm_akhir,p.email,p.act')
                     ->distinct()
                     ->from('user u')
                     ->join('profile p','p.kd_user = u.kd_user')

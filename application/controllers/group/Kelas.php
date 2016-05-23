@@ -18,7 +18,7 @@ class Kelas extends CI_Controller {
 	 */
 	public function index()
 	{
-        $this->get_all_kelas(true);
+        $this->get_current(true);
         $this->load->view('header',$this->data);
         $this->load->view('menu',$this->data);
         $this->load->view('nav-top',$this->data);
@@ -26,10 +26,38 @@ class Kelas extends CI_Controller {
         $this->load->view('footer',$this->data);
 	}
 
+    public function detail($id_kelas)
+    {
+        $this->get_all_kelompok(true);
+        $this->load->view('header',$this->data);
+        $this->load->view('menu',$this->data);
+        $this->load->view('nav-top',$this->data);
+        $this->load->view('Kelompok',$this->data);
+        $this->load->view('footer',$this->data);
+    }
+
     public function get_all_kelas($local = false)
     {
         $this->load->model('kelas_model');
         $data = $this->kelas_model->get_all();
+        if ($this->input->is_ajax_request())
+        {
+            echo json_encode($data);
+            exit;
+        }
+        elseif($local==true)
+        {
+            $this->data['all'] = $data;
+        }
+        else
+        {
+            return $data;
+        }
+    }
+    public function get_all_kelompok($local = false)
+    {
+        $this->load->model('kelompok_model');
+        $data = $this->kelompok_model->get_all();
         if ($this->input->is_ajax_request())
         {
             echo json_encode($data);
@@ -57,7 +85,7 @@ class Kelas extends CI_Controller {
         }
         elseif($local==true)
         {
-            $this->data['current'] = $data;
+            $this->data['kelas'] = $data;
         }
         else
         {
@@ -129,7 +157,7 @@ class Kelas extends CI_Controller {
      * @param null $uuid
      * @return bool
      */
-    public function check_uuid_exist($uuid = NULL)
+    public function check_uuid_exist($uuid = NULL,$act = false)
     {
         $this->load->library('form_validation');
         if (!$this->input->is_ajax_request())
@@ -159,14 +187,22 @@ class Kelas extends CI_Controller {
         {
             $this->load->model('kelas_model');
             $data = $this->kelas_model->check_uuid_exist($uuid);
-            if ($data===true && $this->input->is_ajax_request())
+            if ($data===true && $this->input->is_ajax_request() && $act===false)
             {
                 echo json_encode(array('return' => '00'));
                 exit;
             }
             else
             {
-                return ($data===true) ? true : false;
+                if ($data===true)
+                {
+                    return true;
+                }
+                else
+                {
+                    $this->form_validation->set_message('check_uuid_exist', 'The {field} value is not exist');
+                    return false;
+                }
             }
         }
         else
@@ -183,7 +219,7 @@ class Kelas extends CI_Controller {
         if ($this->form_validation->run() === FALSE)
         {
             $eror = $this->form_validation->error_array();
-            $code['return'] = "01";
+            $code['return'] = "10";
             echo json_encode(array_merge($code,$eror));
         }
         else
@@ -197,7 +233,7 @@ class Kelas extends CI_Controller {
                 echo json_encode($code);
                 exit;
             }
-            $code['return'] = "01"; // Not Acceptable
+            $code['return'] = "20"; // Not Acceptable
             $code['mesage'] = $data;
             echo json_encode($code);
             exit;
@@ -212,11 +248,11 @@ class Kelas extends CI_Controller {
         {
             $this->form_validation->set_data(array('kode'=>$uuid));
         }
-        $this->form_validation->set_rules('kode', 'Kode Kelas', 'required|trim|exact_length[9]|callback_check_uuid_exist');
+        $this->form_validation->set_rules('kode', 'Kode Kelas', 'required|trim|exact_length[9]|callback_check_uuid_exist[true]');
         if ($this->form_validation->run() === FALSE)
         {
             $eror = $this->form_validation->error_array();
-            $code['return'] = "01";
+            $code['return'] = "10";
             echo json_encode(array_merge($code,$eror));
         }
         else
@@ -230,7 +266,7 @@ class Kelas extends CI_Controller {
             }
             else
             {
-                $code['return'] = "01"; // Not Acceptable
+                $code['return'] = "20"; // Not Acceptable
                 $code['mesage'] = $data;
                 echo json_encode($code);
             }

@@ -40,6 +40,6 @@
         var _theme_url = '<?php echo theme_url(); ?>/';
     </script>
 </head>
-<body>
+<body class="nav-md">
 <div class="container body">
     <div class="main_container">

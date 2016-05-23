@@ -2776,6 +2776,7 @@ ul.widget_profile_box li {
     margin-left: 25%;
     margin-right: 25%;
 }
+
 ul.widget_profile_box li a {
   font-size: 4em;
   text-align: center;
@@ -2789,6 +2790,13 @@ ul.widget_profile_box li a {
 ul.widget_profile_box li a:hover {
   color: #1ABB9C !important;
   border: 1px solid rgba(38, 185, 154, 1);
+}
+.widget_tally_box.baru:hover > .x_panel {
+  border: 1px solid rgba(217, 83, 79, 1) !important;
+}
+ul.widget_profile_box.baru li a:hover {
+  color: #D9534F !important;
+  border: 1px solid rgb(217, 83, 79);
 }
 .widget_tally_box:hover > .x_panel {
   border: 1px solid rgba(38, 185, 154, 1) !important;
@@ -4807,4 +4815,9 @@ ul.notifications {
 /** /Dropzone.js **/
 .bg-login {
     background:#F7F7F7;
+}
+
+.kelas-uuid-baru {
+    text-transform: uppercase !important;
+    letter-spacing: .1em;
 }

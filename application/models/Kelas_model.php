@@ -2,6 +2,7 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Kelas_model extends CI_Model {
+    protected $profile;
     private $kd_kelas;
     private $kd_uuid;
     private $kd_user;
@@ -18,7 +19,10 @@ class Kelas_model extends CI_Model {
         parent::__construct();
         $this->load->database();
         $this->load->library('app');
+        $this->load->library('session');
         $this->today = date('Y-m-d');
+        $this->load->model('user_model');
+        $this->profile = $this->user_model->get_profil($this->session->uuid);
     }
     
     private function gen_kd_kelas()
@@ -67,7 +71,8 @@ class Kelas_model extends CI_Model {
         `profile`.nm_awal,
         `profile`.nm_akhir,
         `user`.kd_uuid user_id,
-        xz.usr anggota')
+        xz.usr anggota,
+IFNULL(klp.jml,0) klm')
             ->distinct()
             ->from('kelas_ref')
             ->join('kelas','kelas_ref.kd_kelas = kelas.kd_kelas')
@@ -78,13 +83,57 @@ class Kelas_model extends CI_Model {
             FROM
             kelas kk
             GROUP BY
-            kk.kd_kelas) xz','xz.kdk = kelas.kd_kelas')
+            kk.kd_kelas) xz','xz.kdk = kelas.kd_kelas','left')
+            ->join('(SELECT krf.kd_kelas AS id_kls,
+Count(krf.kd_kelas) AS jml
+FROM
+kelompok_ref AS krf
+GROUP BY
+krf.kd_kelas
+) klp ','klp.id_kls = kelas_ref.kd_kelas','left')
             ->get()->result();
     }
-    
+    public function get_current()
+    {
+
+        $this->kd_user = $this->profile->kd_user;
+        $this->db->select('kelas_ref.kd_kelas,
+        kelas_ref.kd_uuid,
+        kelas_ref.nm_kelas,
+        kelas_ref.maks,
+        `profile`.nm_awal,
+        `profile`.nm_akhir,
+        `user`.kd_uuid user_id,
+        IFNULL(xz.usr,0) anggota,
+IFNULL(klp.jml,0) klm')
+            ->distinct()
+            ->from('kelas_ref')
+            ->join('kelas','kelas_ref.kd_kelas = kelas.kd_kelas','left')
+            ->join('profile','kelas_ref.kd_user = profile.kd_user')
+            ->join('user','profile.kd_user = user.kd_user')
+            ->join('(SELECT kk.kd_kelas kdk,
+            Count(kk.kd_user) usr
+            FROM
+            kelas kk
+            GROUP BY
+            kk.kd_kelas) xz','xz.kdk = kelas.kd_kelas','left')
+            ->join('(SELECT krf.kd_kelas AS id_kls,
+Count(krf.kd_kelas) AS jml
+FROM
+kelompok_ref AS krf
+GROUP BY
+krf.kd_kelas
+) klp ','klp.id_kls = kelas_ref.kd_kelas','left');
+        ($this->profile->act == 1)
+            ? $this->db->where('kelas.kd_user',$this->kd_user)
+            : $this->db->where('kelas_ref.kd_user',$this->kd_user)
+            ;
+       return $this->db->get()->result();
+    }
+
     public function create()
     {
-        $this->load->library('session');        
+
         if (!$this->session->has_userdata('uuid')) exit('Error : Unexpected System Error!');
         
         $this->load->model('user_model');        
@@ -110,7 +159,7 @@ class Kelas_model extends CI_Model {
         );
         $this->db->trans_start();
         $this->db->insert('kelas_ref',$ref);
-        $this->db->insert('kelas',$kelas);
+        // $this->db->insert('kelas',$kelas); // Guru tidak perlu join ke kelas nya sbg siswa
         $this->db->trans_complete();
         return array(
             'msg' => 'ok',
@@ -138,14 +187,11 @@ class Kelas_model extends CI_Model {
     {
         $this->common_init($kelas_uuid);
 
-        $query = $this->db->select('r.kd_kelas')
+        $query = $this->db->select('kd_kelas')
             ->distinct()
-            ->from('kelas k')
-            ->join('kelas_ref r','r.kd_kelas = k.kd_kelas')
-            ->where('r.kd_uuid',$this->kd_uuid)
-            ->where('k.kd_user',$this->kd_user)
-            ->limit(1)
-        ->get();
+            ->from('kelas')
+            ->where('kd_kelas',$this->kd_kelas)
+            ->get();
 
         if ($query->num_rows() < 1)
         {

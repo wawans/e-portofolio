@@ -66,6 +66,33 @@ klk.kd_kelas
             ->get()->result();
     }
 
+    public function get_all_kelompok()
+    {
+        return $this->db->select('kelas_ref.kd_uuid,
+kelas_ref.nm_kelas,
+kelompok_ref.kd_uuid kl_uuid,
+kelompok_ref.nm_kelompok,
+klm.cnt,
+IFNULL(kelompok_ref.maks,0) maks,
+`profile`.nm_awal,
+`profile`.nm_akhir')
+            ->distinct()
+            ->from('kelas_ref')
+            ->join('kelompok_ref','kelas_ref.kd_kelas = kelompok_ref.kd_kelas')
+            ->join('profile','kelompok_ref.kd_user = profile.kd_user')
+            ->join('(SELECT
+klk.kd_kelompok AS kd_pok,
+klk.kd_kelas AS kd_las,
+Count(klk.kd_user) AS cnt
+FROM
+kelompok AS klk
+GROUP BY
+klk.kd_kelompok,
+klk.kd_kelas
+) klm','klm.kd_pok = kelompok_ref.kd_kelompok')
+            ->get()->result();
+    }
+
     public function get_kd_kelompok($uuid)
     {
         return $this->db->select('kd_kelompok')

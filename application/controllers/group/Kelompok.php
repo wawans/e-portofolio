@@ -29,7 +29,7 @@ class Kelompok extends CI_Controller {
     public function get_all($local = false)
     {
         $this->load->model('kelompok_model');
-        $data = $this->kelompok_model->get_all();
+        $data = $this->kelompok_model->get_all_kelompok();
         if ($this->input->is_ajax_request())
         {
             echo json_encode($data);

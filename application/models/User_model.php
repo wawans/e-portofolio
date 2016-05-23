@@ -82,6 +82,7 @@ class User_model extends CI_Model {
     public function create_user()
     {
         $this->uname = $this->input->post('username');
+        $this->act = $this->input->post('akun');
         $this->upass = $this->input->post('password');
         $this->email = $this->input->post('email');
         $this->nm_awal = $this->input->post('nama_awal');
@@ -108,7 +109,8 @@ class User_model extends CI_Model {
             'nm_awal' => $this->nm_awal,
             'nm_akhir' => $this->nm_akhir,
             'email' => $this->email,
-            'tgl_mod' => $this->tgl_mod
+            'tgl_mod' => $this->tgl_mod,
+            'act'=> $this->act
         );
         $this->db->trans_start();
         $this->db->insert('user',$user);

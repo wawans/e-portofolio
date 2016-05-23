@@ -15,6 +15,19 @@
                                         <div class="col">
                                             <div class="col width-1of4">
                                                 <div class="cell">
+                                                    <label for="login">Saya Seorang</label>
+                                                </div>
+                                            </div>
+                                            <div class="col width-fill">
+                                                <div class="cell">
+                                                    <input name="akun[]" type="radio" class="radio" value="1"> Siswa
+                                                    <input name="akun[]" type="radio" class="radio" value="2"> Guru
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <div class="col width-1of4">
+                                                <div class="cell">
                                                     <label for="login">Username</label>
                                                 </div>
                                             </div>

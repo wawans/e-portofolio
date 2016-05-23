@@ -8,6 +8,8 @@ class Kelompok extends CI_Controller {
     {
         parent::__construct();
         $this->load->library('session');
+        $this->load->model('user_model');
+        $this->data['profile'] = $this->user_model->get_profil($this->session->uuid);
     }
 
 	/**
@@ -18,8 +20,10 @@ class Kelompok extends CI_Controller {
 	{
         $this->get_all(true);
         $this->load->view('header',$this->data);
+        $this->load->view('menu',$this->data);
         $this->load->view('nav-top',$this->data);
         $this->load->view('Kelompok',$this->data);
+        $this->load->view('footer',$this->data);
 	}
     // kelompok
     public function get_all($local = false)

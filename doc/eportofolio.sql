@@ -12,6 +12,8 @@ File Encoding         : 65001
 
 Date: 2016-05-18 23:53:27
 */
+CREATE DATABASE eportofolio;
+USE eportofolio;
 
 SET FOREIGN_KEY_CHECKS=0;
 

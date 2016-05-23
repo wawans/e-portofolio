@@ -26,7 +26,7 @@ class Masuk extends CI_Controller {
         if ($this->form_validation->run() === FALSE)
         {
             $eror = $this->form_validation->error_array();
-            $code['return'] = "01";
+            $code['return'] = "10"; // Error Form Validation
             echo json_encode(array_merge($code,$eror));
         }
         else
@@ -42,11 +42,11 @@ class Masuk extends CI_Controller {
                     'name' => $this->input->post('username')
                 ));
                 if (!$this->input->is_ajax_request()) redirect(site_url('home/index/?uuid='.$data['uuid']));
-                $code['return'] = "00"; // Accepted
+                $code['return'] = "00"; // True
                 echo json_encode($code);
                 exit;
             }
-            $code['return'] = "01"; // Not Acceptable
+            $code['return'] = "20"; // Error Message
             $code['mesage'] = $data;
             echo json_encode($code);
             exit;

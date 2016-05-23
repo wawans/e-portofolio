@@ -3,7 +3,7 @@
         <div class="col-md-12 col-sm-12 col-xs-12">
             <div class="x_panel" style="height:100%;">
                 <div class="x_title">
-                    <h2><i class="fa fa-users"></i> Kelompok</h2>
+                    <h2><i class="fa fa-line-chart"></i> Nilai</h2>
                     <div class="clearfix"></div>
                 </div>
                 <div class="x_content">

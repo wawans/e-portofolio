@@ -33,6 +33,12 @@
     <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
     <script type="text/javascript" src="<?= theme_url(); ?>/js/jquery.min.js"></script>
+    <script type="text/javascript">
+        // Global
+        var _site_url  = '<?php echo site_url(); ?>/';
+        var _base_url  = '<?php echo base_url(); ?>';
+        var _theme_url = '<?php echo theme_url(); ?>/';
+    </script>
 </head>
 <body>
 <div class="container body">

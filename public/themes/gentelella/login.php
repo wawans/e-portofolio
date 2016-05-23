@@ -5,7 +5,7 @@
     <div id="wrapper">
         <div id="login" class=" form">
             <section class="login_content">
-                <form method="post" action="<?php echo site_url('user/masuk/post');?>">
+                <form name="flogin" method="post" action="<?php echo site_url('user/masuk/post');?>">
                     <h1>Masuk</h1>
                     <div>
                         <label>Nama Pengguna</label>
@@ -21,6 +21,7 @@
                     </div>
                     <div>
                         <input type="submit" class="btn btn-primary submit" value="Masuk" />
+                        <span id="loader" class="text-info"></span>
                         <a class="reset_pass" href="<?= site_url('user/daftar');?>"> Pengguna Baru? Daftar Akun</a>
                     </div>
                     <div class="clearfix"></div>

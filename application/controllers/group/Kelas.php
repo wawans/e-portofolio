@@ -41,12 +41,12 @@ class Kelas extends CI_Controller {
         }
         else
         {
-            $this->index();
+            return $data;
         }
     }
 
     // kelas berdasarkan user yg login / yang di ikuti
-    public function get_current()
+    public function get_current($local = false)
     {
         $this->load->model('kelas_model');
         $data = $this->kelas_model->get_current();
@@ -55,24 +55,80 @@ class Kelas extends CI_Controller {
             echo json_encode($data);
             exit;
         }
+        elseif($local==true)
+        {
+            $this->data['current'] = $data;
+        }
         else
         {
-            $this->data['all'] = $data;
-            $this->index();
+            return $data;
         }
     }
 
     // data kelas tertentu berdasrkn uuid , return 1;
-    public function get_uuid($uuid)
+    public function get_uuid($uuid,$local = false)
     {
-
+        $var = $this->check_uuid_exist($uuid);
+        if($var == true)
+        {
+            $this->load->model('kelas_model');
+            $data = $this->kelas_model->get_uuid($uuid);
+            if ($this->input->is_ajax_request())
+            {
+                echo json_encode($data);
+                exit;
+            }
+            elseif($local==true)
+            {
+                $this->data['cur_uuid'] = $data;
+            }
+            else
+            {
+                return $data;
+            }
+        }
+        else
+        {
+            return $var;
+        }
     }
 
-    public function get_uuid_member()
+    /**
+     * @param string $uuid
+     * @param boolean $local
+     * @return boolean / string
+     */
+    public function get_uuid_member($uuid,$local = false)
     {
-
+        $var = $this->check_uuid_exist($uuid);
+        if($var == true)
+        {
+            $this->load->model('kelas_model');
+            $data = $this->kelas_model->get_uuid_member($uuid);
+            if ($this->input->is_ajax_request())
+            {
+                echo json_encode($data);
+                exit;
+            }
+            elseif($local==true)
+            {
+                $this->data['uuid_member'] = $data;
+            }
+            else
+            {
+                return $data;
+            }
+        }
+        else
+        {
+            return $var;
+        }
     }
 
+    /**
+     * @param null $uuid
+     * @return bool
+     */
     public function check_uuid_exist($uuid = NULL)
     {
         $this->load->library('form_validation');

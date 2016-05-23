@@ -7,7 +7,20 @@
             </div>
             <div class="x_content">
 
-                <form class="form-horizontal form-label-left" method="post" action="<?php echo site_url('user/daftar/set_user/'.$user);?>" novalidate>
+                <form name="fsignup" class="form-horizontal form-label-left" method="post" action="<?php echo site_url('user/daftar/set_user/'.$user);?>" novalidate>
+                    <div class="item form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="name">Saya Seorang ?<span class="required">*</span>
+                        </label>
+                        <div class="form-group">
+                            <div class="col-md-6 col-sm-6 col-xs-12 form-inline form-horizontal ">
+                                <div class="radio radio-inline">
+                                    <label><input name="akun" type="radio" value="1" checked> Siswa</label>
+                                </div>
+                                <div class="radio radio-inline">
+                                    <label><input name="akun" type="radio" value="2"> Guru</label>
+                                </div>
+                        </div>
+                    </div>
                     <div class="item form-group">
                         <label class="control-label col-md-3 col-sm-3 col-xs-12" for="name">Nama Pengguna<span class="required">*</span>
                         </label>
@@ -54,8 +67,9 @@
                     <div class="ln_solid"></div>
                     <div class="form-group">
                         <div class="col-md-5 col-md-offset-3">
-                            <button type="submit" class="btn btn-primary">Batal</button>
+                            <button type="reset" class="btn btn-primary">Batal</button>
                             <button id="send" type="submit" class="btn btn-success">Daftar</button>
+                            <span id="loader" class="text-info"></span>
                         </div>
                         <div class="col-md-3">
                             <a class="btn btn-dark" href="<?php echo site_url();?>">Masuk</a>

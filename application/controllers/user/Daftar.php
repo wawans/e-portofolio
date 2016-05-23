@@ -17,13 +17,14 @@ class Daftar extends CI_Controller {
 	{
         $data['user']=$user;
         $this->load->view('header',$data);
-        //$this->load->view('nav-top',$data);
         $this->load->view('signup',$data);
+        $this->load->view('footer',$data);
 	}
 
     public function set_user()
     {
         //if (!$this->input->is_ajax_request()) exit;
+        $this->form_validation->set_rules('akun', 'Jenis Akun', 'required|trim|exact_length[1]');
         $this->form_validation->set_rules('nama_awal', 'Nama Awal', 'required|trim|min_length[3]|max_length[125]');
         $this->form_validation->set_rules('nama_akhir', 'Nama Akhir', 'trim|max_length[125]');
         $this->form_validation->set_rules('username', 'Username', 'required|trim|min_length[4]|max_length[75]|callback_check_username');
@@ -33,7 +34,7 @@ class Daftar extends CI_Controller {
         if ($this->form_validation->run() === FALSE)
         {
             $eror = $this->form_validation->error_array();
-            $code['return'] = "01";
+            $code['return'] = "10";
             echo json_encode(array_merge($code,$eror));
         }
         else
@@ -46,7 +47,7 @@ class Daftar extends CI_Controller {
                 echo json_encode($code);
                 exit;
             }
-            $code['return'] = "01"; // Not Acceptable
+            $code['return'] = "20"; // Not Acceptable
             $code['mesage'] = $data;
             echo json_encode($code);
             exit;

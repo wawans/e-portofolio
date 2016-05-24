@@ -91,6 +91,7 @@
                     </div>
                 </div>
             </div>
+        <div class="clearfix"></div>
         <?php for ($i=0;$i<50;$i++): ?>
 <!--user card-->
         <div class="col-md-3 col-sm-3 col-xs-12 widget profile_details">

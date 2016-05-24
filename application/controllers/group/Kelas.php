@@ -29,10 +29,11 @@ class Kelas extends CI_Controller {
     public function detail($id_kelas)
     {
         $this->get_all_kelompok(true);
+        $this->get_uuid($id_kelas,true);
         $this->load->view('header',$this->data);
         $this->load->view('menu',$this->data);
         $this->load->view('nav-top',$this->data);
-        $this->load->view('Kelompok',$this->data);
+        $this->load->view('detail',$this->data);
         $this->load->view('footer',$this->data);
     }
 
@@ -54,6 +55,26 @@ class Kelas extends CI_Controller {
             return $data;
         }
     }
+
+    public function get_kelompok_kelas($local = false,$kelas_uuid)
+    {
+        $this->load->model('kelompok_model');
+        $data = $this->kelompok_model->get_kelompok_kelas($kelas_uuid);
+        if ($this->input->is_ajax_request())
+        {
+            echo json_encode($data);
+            exit;
+        }
+        elseif($local==true)
+        {
+            $this->data[__FUNCTION__] = $data;
+        }
+        else
+        {
+            return $data;
+        }
+    }
+
     public function get_all_kelompok($local = false)
     {
         $this->load->model('kelompok_model');
@@ -108,7 +129,7 @@ class Kelas extends CI_Controller {
             }
             elseif($local==true)
             {
-                $this->data['cur_uuid'] = $data;
+                $this->data['get_uuid'] = $data;
             }
             else
             {

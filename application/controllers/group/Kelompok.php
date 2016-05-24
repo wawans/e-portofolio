@@ -64,7 +64,7 @@ class Kelompok extends CI_Controller {
         }
     }
 
-    // kelas berdasarkan user yg login / yang di ikuti
+    // berdasarkan user yg login / yang di ikuti
     public function get_current()
     {
         $this->load->model('kelompok_model');

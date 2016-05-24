@@ -121,6 +121,11 @@ klk.kd_kelas
         return $this->check_uuid();
     }
 
+    public function get_kelompok_kelas($kelas_uuid)
+    {
+
+    }
+
     public function create($kelas_uuid=null)
     {
         $kelas_uuid = (!isset($kelas_uuid)) ? $this->input->post('kelas') : $kelas_uuid;

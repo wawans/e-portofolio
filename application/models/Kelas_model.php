@@ -131,6 +131,16 @@ krf.kd_kelas
        return $this->db->get()->result();
     }
 
+    public function get_uuid($id_kelas)
+    {
+        if ($this->check_uuid_exist($id_kelas))
+        {
+            return $this->db->select('*')
+                ->join('profile','kelas_ref.kd_user = profile.kd_user')
+                ->get_where('kelas_ref',array('kelas_ref.kd_uuid'=>$id_kelas))->row();
+        }
+    }
+
     public function create()
     {
 

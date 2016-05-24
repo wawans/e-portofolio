@@ -883,7 +883,7 @@ legend {
 
 /** Contacts **/
 .profile_details:nth-child(3n){
-    clear:both;
+/*    clear:both;*/
 }
 
 .profile_details .profile_view {

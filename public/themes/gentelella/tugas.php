@@ -7,10 +7,30 @@
                     <div class="clearfix"></div>
                 </div>
                 <div class="x_content">
-                    <form name="ftugas_baru" method="post" action="<?php echo site_url();?>" novalidate>
-                        <label>Judul / Subject :</label>
-                        <input class="form-control" type="text" required="" name="fullname">
-                        <label>Isi :</label>
+                    <form name="ftugas_baru" method="post" action="<?php echo site_url('portofolio/tugas/create/'.$kelas_uuid); ?>" novalidate>
+                        <div class="form-group">
+                            <label class="col-md-2">Kelas :</label>
+                            <div class="col-md-4">
+                                <select name="kelas" class="form-control">
+                                    <?php if (isset($list_kelas)) :
+                                                foreach($list_kelas as $item): ?>
+                                    <option value="<?= $item->kd_uuid;?>"><?= $item->nm_kelas;?></option>
+                                    <?php endforeach; endif; ?>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="clearfix"></div>
+                        <div class="form-group">
+                        <label class="col-md-2">Judul / Subject :</label>
+                            <div class="col-md-10">
+                        <input class="form-control" type="text" required="" name="judul">
+                            </div>
+</div>
+                <div class="clearfix"></div>
+                <div class="form-group">
+                        <label class="col-md-2">Isi :</label>
+                    </div>
+                        <div class="clearfix"></div>
                         <div id="alerts"></div>
                         <div class="btn-toolbar editor" data-role="editor-toolbar" data-target="#editor">
                             <div class="btn-group">
@@ -89,27 +109,33 @@
                         <div class="clearfix"></div>
                         <div class="form-inline form-horizontal ">
                             <label class="control-label col-md-2" style="text-align: left !important;">Jangka</label>
-                            <div class="input-prepend input-group">
-                                <span class="add-on input-group-addon"><i class="glyphicon glyphicon-calendar fa fa-calendar"></i></span>
-                                <input type="text" style="width: 200px" name="jangka" id="reservation" class="form-control" value="<?=date('m/d/Y');?> - <?=date('m/d/Y');?>" />
+                            <div class="col-md-3 xdisplay_inputx form-group has-feedback">
+                                <input name="tgl_awal" value="<?=date('Y-m-d');?>" type="date" class="form-control has-feedback-left">
+                                <span class="fa fa-calendar form-control-feedback left" aria-hidden="true"></span>
+                            </div>
+                            <label class="control-label col-md-1 text-center"> s.d </label>
+                            <div class="col-md-1 xdisplay_inputx form-group has-feedback">
+                                <input name="tgl_ahir" value="<?=date('Y-m-d');?>" type="date" class="form-control has-feedback-left">
+                                <span class="fa fa-calendar form-control-feedback left" aria-hidden="true"></span>
                             </div>
                         </div>
+                        <div class="clearfix"></div>
                         <div class="form-inline form-horizontal ">
                             <label class="control-label col-md-2" style="text-align: left !important;">Grup</label>
                             <div class="radio radio-inline col-md-2">
-                                <label><input name="grup" type="radio" value="1" checked> Individu.</label>
+                                <label><input name="jns_grup" type="radio" value="1" checked> Individu.</label>
                             </div>
                             <div class="radio radio-inline">
-                                <label><input name="grup" type="radio" value="2"> Guru &amp; Kelompok.</label>
+                                <label><input name="jns_grup" type="radio" value="2"> Guru &amp; Kelompok.</label>
                             </div>
                         </div>
                         <div class="form-inline form-horizontal ">
                             <label class="control-label col-md-2" style="text-align: left !important;">Penilai </label>
                             <div class="radio radio-inline col-md-2">
-                                <label><input name="penilai" type="radio" value="1" checked> Guru.</label>
+                                <label><input name="jns_nilai" type="radio" value="1" checked> Guru.</label>
                             </div>
                             <div class="radio radio-inline">
-                                <label><input name="penilai" type="radio" value="2"> Guru &amp; Siswa.</label>
+                                <label><input name="jns_nilai" type="radio" value="2"> Guru &amp; Siswa.</label>
                             </div>
                         </div>
                         <div class="form-inline form-horizontal ">
@@ -207,8 +233,11 @@
     });
 
     $(document).ready(function() {
-        $('#reservation').daterangepicker(null, function(start, end, label) {
-            console.log(start.toISOString(), end.toISOString(), label);
+        $('input[type=date]').daterangepicker({
+            singleDatePicker: true,
+            minDate: moment(),
+            format: 'YYYY-MM-DD',
+            calender_style: "picker_1"
         });
     });
 

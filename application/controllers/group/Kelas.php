@@ -176,6 +176,7 @@ class Kelas extends CI_Controller {
 
     /**
      * @param null $uuid
+     * @param bool $act
      * @return bool
      */
     public function check_uuid_exist($uuid = NULL,$act = false)

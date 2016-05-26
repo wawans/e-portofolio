@@ -201,6 +201,7 @@ krf.kd_kelas
             ->distinct()
             ->from('kelas')
             ->where('kd_kelas',$this->kd_kelas)
+            ->where('kd_user',$this->kd_user)
             ->get();
 
         if ($query->num_rows() < 1)

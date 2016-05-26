@@ -15,7 +15,7 @@
                     <li><a href="<?php echo site_url('group/kelas'); ?>"><i class="fa fa-graduation-cap"></i> Kelas</a></li>
                     <?php if(isset($get_uuid)): ?>
                     <li><a href="<?php echo site_url('group/kelompok'); ?>"><i class="fa fa-group"></i> Kelompok</a></li>
-                    <li><a href="<?php echo site_url('portofolio/tugas/baru/'.$get_uuid->kd_uuid); ?>"><i class="fa fa-book"></i> Tugas</a></li>
+                    <li><a href="<?php echo site_url('portofolio/tugas/index/'.$get_uuid->kd_uuid); ?>"><i class="fa fa-book"></i> Tugas</a></li>
                     <?php endif;?>
                     <li><a href="<?php echo site_url('portofolio/nilai'); ?>"><i class="fa fa-line-chart"></i> Nilai</a></li>
                     <li><a href="<?php echo site_url('user/profil/pengaturan');?>"><i class="fa fa-cog"></i> Pengaturan</a></li>

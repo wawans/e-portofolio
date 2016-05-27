@@ -29,7 +29,31 @@
                 <li class="col-md-4 col-sm-4 col-xs-12"><a href="">Siswa</a></li>
             </ul>
             <br />
+            <?php if(isset($tugas)):
+                foreach($tugas as $item): ?>
             <div class="x_panel" style="height:100%;">
+                <div class="x_title">
+                    <h2><?=$item->judul; ?></h2>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="x_content">
+                    <label class="byline"><i class="fa fa-tag"></i>
+                        <span>Pada </span><a><?=$item->tgl_awal; ?></a>
+                        <span>Oleh </span><a><?=$item->kd_user; ?></a></label>
+                    <article>
+                        <?=$item->konten; ?>
+                    </article>
+                    <div class="divider-dashed"></div>
+                    <ul>
+                        <li><a><i class="fa fa-paperclip"></i> File-name.doc</a></li>
+                    </ul>
+                    <div class="divider-dashed"></div>
+                    <a class="btn btn-sm btn-primary" href="<?php echo site_url('portofolio/tugas/detail/'.$get_uuid->kd_uuid.'/'.$item->kd_uuid); ?>">Detail</a>
+                    <div class="clearfix"></div>
+                </div>
+            </div>
+            <?php endforeach; endif; ?>
+            <!--<div class="x_panel" style="height:100%;">
                 <div class="x_title">
                     <h2>Judul Tugas</h2>
                     <div class="clearfix"></div>
@@ -45,24 +69,7 @@
                     <a class="btn btn-sm btn-primary">Detail</a>
                     <div class="clearfix"></div>
                 </div>
-            </div>
-            <div class="x_panel" style="height:100%;">
-                <div class="x_title">
-                    <h2>Judul Tugas</h2>
-                    <div class="clearfix"></div>
-                </div>
-                <div class="x_content">
-                    <label class="byline"><i class="fa fa-tag"></i> <span>Oleh </span><a>Drs. Kuncoro</a></label>
-                    <p>Film festivals used to be do-or-die moments for movie makers. They were where you met the producers that could fund your project, and if the buyers liked your flick, they’d pay to Fast-forward and</p>
-                    <div class="divider-dashed"></div>
-                    <ul>
-                        <li><a><i class="fa fa-paperclip"></i> File-name.doc</a></li>
-                    </ul>
-                    <div class="divider-dashed"></div>
-                    <a class="btn btn-sm btn-primary">Detail</a>
-                    <div class="clearfix"></div>
-                </div>
-            </div>
+            </div>-->
         </div>
             <!--kelompok-->
             <div class="col-md-3 col-xs-12 widget widget_tally_box baru">

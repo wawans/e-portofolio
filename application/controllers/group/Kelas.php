@@ -8,6 +8,7 @@ class Kelas extends CI_Controller {
     {
         parent::__construct();
         $this->load->library('session');
+        if (!$this->session->has_userdata('uuid')) redirect(base_url());
         $this->load->model('user_model');
         $this->data['profile'] = $this->user_model->get_profil($this->session->uuid);
     }
@@ -30,6 +31,8 @@ class Kelas extends CI_Controller {
     {
         $this->get_all_kelompok(true);
         $this->get_uuid($id_kelas,true);
+        $this->load->model('tugas_model');
+        $this->data['tugas'] = $this->tugas_model->daftar_tugas($id_kelas);
         $this->load->view('header',$this->data);
         $this->load->view('menu',$this->data);
         $this->load->view('nav-top',$this->data);

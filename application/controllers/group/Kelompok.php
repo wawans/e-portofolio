@@ -8,6 +8,7 @@ class Kelompok extends CI_Controller {
     {
         parent::__construct();
         $this->load->library('session');
+        if (!$this->session->has_userdata('uuid')) redirect(base_url());
         $this->load->model('user_model');
         $this->data['profile'] = $this->user_model->get_profil($this->session->uuid);
     }

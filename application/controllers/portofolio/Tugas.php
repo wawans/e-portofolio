@@ -8,6 +8,7 @@ class Tugas extends CI_Controller {
     {
         parent::__construct();
         $this->load->library('session');
+        if (!$this->session->has_userdata('uuid')) redirect(base_url());
         $this->load->model('user_model');
         $this->data['profile'] = $this->user_model->get_profil($this->session->uuid);
     }
@@ -25,6 +26,22 @@ class Tugas extends CI_Controller {
         $this->load->view('tugas',$this->data);
         $this->load->view('footer',$this->data);
 	}
+
+    public function detail($kelas_uuid,$tugas_uuid)
+    {
+        $this->data['data_tugas'] = $this->detail_tugas($tugas_uuid);
+        $this->data['kelas_uuid'] = $kelas_uuid;
+        $this->load->view('header',$this->data);
+        $this->load->view('menu',$this->data);
+        $this->load->view('nav-top',$this->data);
+        $this->load->view('tugas-detail',$this->data);
+        $this->load->view('footer',$this->data);
+    }
+
+    public function buat($kelas_uuid)
+    {
+
+    }
 
     public function baru($kelas_uuid)
     {
@@ -75,6 +92,22 @@ class Tugas extends CI_Controller {
             return $data;
         }
     }
+
+    public function detail_tugas($tugas_uuid)
+    {
+        $this->load->model('tugas_model');
+        $data = $this->tugas_model->detail_tugas($tugas_uuid);
+        if ($this->input->is_ajax_request())
+        {
+            echo json_encode($data);
+            exit;
+        }
+        else
+        {
+            return $data;
+        }
+    }
+
 }
 
 /* End of file Tugas.php */

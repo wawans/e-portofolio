@@ -32,6 +32,263 @@ class Tugas_model extends CI_Model {
         $this->profile = $this->user_model->get_profil($this->session->uuid);
     }
 
+    /**
+     * @return mixed
+     */
+    public function getProfile()
+    {
+        return $this->profile;
+    }
+
+    /**
+     * @param mixed $profile
+     */
+    public function setProfile($profile)
+    {
+        $this->profile = $profile;
+    }
+
+    /**
+     * @return bool|string
+     */
+    public function getToday()
+    {
+        return $this->today;
+    }
+
+    /**
+     * @param bool|string $today
+     */
+    public function setToday($today)
+    {
+        $this->today = $today;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getKdTugas()
+    {
+        return $this->kd_tugas;
+    }
+
+    /**
+     * @param mixed $kd_tugas
+     */
+    public function setKdTugas($kd_tugas)
+    {
+        $this->kd_tugas = $kd_tugas;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getKdUuid()
+    {
+        return $this->kd_uuid;
+    }
+
+    /**
+     * @param mixed $kd_uuid
+     */
+    public function setKdUuid($kd_uuid)
+    {
+        $this->kd_uuid = $kd_uuid;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getKdKelas()
+    {
+        return $this->kd_kelas;
+    }
+
+    /**
+     * @param mixed $kd_kelas
+     */
+    public function setKdKelas($kd_kelas)
+    {
+        $this->kd_kelas = $kd_kelas;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getKdUser()
+    {
+        return $this->kd_user;
+    }
+
+    /**
+     * @param mixed $kd_user
+     */
+    public function setKdUser($kd_user)
+    {
+        $this->kd_user = $kd_user;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getJudul()
+    {
+        return $this->judul;
+    }
+
+    /**
+     * @param mixed $judul
+     */
+    public function setJudul($judul)
+    {
+        $this->judul = $judul;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getKonten()
+    {
+        return $this->konten;
+    }
+
+    /**
+     * @param mixed $konten
+     */
+    public function setKonten($konten)
+    {
+        $this->konten = $konten;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getJnsGrup()
+    {
+        return $this->jns_grup;
+    }
+
+    /**
+     * @param mixed $jns_grup
+     */
+    public function setJnsGrup($jns_grup)
+    {
+        $this->jns_grup = $jns_grup;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getJnsNilai()
+    {
+        return $this->jns_nilai;
+    }
+
+    /**
+     * @param mixed $jns_nilai
+     */
+    public function setJnsNilai($jns_nilai)
+    {
+        $this->jns_nilai = $jns_nilai;
+    }
+
+    /**
+     * @return int
+     */
+    public function getLampiran()
+    {
+        return $this->lampiran;
+    }
+
+    /**
+     * @param int $lampiran
+     */
+    public function setLampiran($lampiran)
+    {
+        $this->lampiran = $lampiran;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getTglAwal()
+    {
+        return $this->tgl_awal;
+    }
+
+    /**
+     * @param mixed $tgl_awal
+     */
+    public function setTglAwal($tgl_awal)
+    {
+        $this->tgl_awal = $tgl_awal;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getTglAkhir()
+    {
+        return $this->tgl_akhir;
+    }
+
+    /**
+     * @param mixed $tgl_akhir
+     */
+    public function setTglAkhir($tgl_akhir)
+    {
+        $this->tgl_akhir = $tgl_akhir;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getTglBuat()
+    {
+        return $this->tgl_buat;
+    }
+
+    /**
+     * @param mixed $tgl_buat
+     */
+    public function setTglBuat($tgl_buat)
+    {
+        $this->tgl_buat = $tgl_buat;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getTglMod()
+    {
+        return $this->tgl_mod;
+    }
+
+    /**
+     * @param mixed $tgl_mod
+     */
+    public function setTglMod($tgl_mod)
+    {
+        $this->tgl_mod = $tgl_mod;
+    }
+
+    /**
+     * @return int
+     */
+    public function getAct()
+    {
+        return $this->act;
+    }
+
+    /**
+     * @param int $act
+     */
+    public function setAct($act)
+    {
+        $this->act = $act;
+    }
+
+
     private function gen_kd_tugas()
     {
         $date = date('dym');
@@ -59,6 +316,16 @@ class Tugas_model extends CI_Model {
         return ($query->num_rows() > 0) ? true : false;
     }
 
+    /**
+     * @param $tugas_uuid
+     * @return bool
+     */
+    private function is_tugas_exist($tugas_uuid)
+    {
+        $query = $this->db->select('kd_uuid')->get_where('tugas_ref',array('kd_uuid'=>$tugas_uuid),1);
+        return ($query->num_rows() > 0) ? true : false;
+    }
+
     public function baru($kelas_uuid)
     {
         if (!$this->is_kelas_exist($kelas_uuid)) return 'Error!';
@@ -80,6 +347,27 @@ class Tugas_model extends CI_Model {
         $this->db->insert('tugas_ref',$this);
         $this->db->trans_complete();
         return true;
+    }
+
+    public function daftar_tugas($kelas_uuid)
+    {
+        if (!$this->is_kelas_exist($kelas_uuid)) return 'Error!';
+        $this->load->model('kelas_model');
+        $this->kd_kelas = $this->kelas_model->get_kd_kelas($kelas_uuid);
+        return $this->db->where('kd_kelas',$this->kd_kelas)
+            ->where('act','1')
+            ->order_by('tgl_awal', 'DESC')
+            ->get('tugas_ref')
+            ->result();
+    }
+
+    public function detail_tugas($tugas_uuid)
+    {
+        if (!$this->is_tugas_exist($tugas_uuid)) return 'Error!';
+        $this->setKdUuid($tugas_uuid);
+        return $this->db->where('kd_uuid',$this->getKdUuid())
+            ->get('tugas_ref')
+            ->row();
     }
 }
 

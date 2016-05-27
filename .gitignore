@@ -26,3 +26,5 @@ user_guide_src/cilexer/pycilexer.egg-info/*
 *.sublime-workspace
 *.sublime-project
 public/themes/default/css/variables.css
+public/uploads/*
+!public/uploads/index.html

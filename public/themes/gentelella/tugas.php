@@ -67,8 +67,39 @@
                         <br />
                         <div class="clearfix"></div>
                         <div class="divider-dashed"></div>
+                        <div class="form-inline form-horizontal ">
+                            <label class="control-label left" style="text-align: left !important;">
+                                <button onclick="$('input[name=filename]').trigger('click');" type="button" class="btn btn-primary">Lampirkan Berkas</button>
+                            </label>
+                            <div class="col-md-8 list-uploaded">
+<!--
+                                <ul class="list-unstyled col-md-12 list-inline">
+                                    <li><a href="javscript:;"><i class="fa fa-paperclip"></i> File-name.doc</a></li>
+                                    <li><a href="javscript:;"><i class="fa fa-trash-o"></i> Hapus</a></li>
+                                </ul>
+                                <ul class="list-unstyled col-md-12 list-inline">
+                                    <li><a href="javscript:;"><i class="fa fa-paperclip"></i> File-name.doc</a></li>
+                                    <li><a href="javscript:;"><i class="fa fa-trash-o"></i> Hapus</a></li>
+                                </ul>-->
+<!--                                <table class="table ">
+                                    <tr>
+                                        <th colspan="2">lam</th>
+                                    </tr>
+                                    <tr>
+                                        <td class="no-border"><a href="javscript:;"><i class="fa fa-paperclip"></i> File-name.doc</a></td>
+                                        <td class="no-border"><a href="javscript:;"><i class="fa fa-trash-o"></i> Hapus</a></td>
+                                    </tr>
+                                    <tr>
+                                        <td><a href="javscript:;"><i class="fa fa-paperclip"></i> File-name.doc</a></td>
+                                        <td><a href="javscript:;"><i class="fa fa-trash-o"></i> Hapus</a></td>
+                                    </tr>
+                                </table>
+-->                            </div>
+                        </div>
+                        <div class="clearfix"></div>
+                        <div class="ln_solid"></div>
                         <button id="send" type="submit" class="btn btn-success">Simpan</button>
-                        <span id="loader" class="text-info loader"></span>
+                        <span class="text-info loader"></span>
                     </form>
                 </div>
             </div>
@@ -76,7 +107,11 @@
     </div>
 </div>
 
-
+<!-- Hidden form Upload -->
+<form class="hide hidden" name="fupload" action="<?php echo site_url('portofolio/media/put_file'); ?>" method="post" enctype="multipart/form-data">
+    <input type="file" id="filename" name="filename" onchange="$('form[name=fupload]').submit();" />
+</form>
+<!-- Hidden form Upload -->
 <!-- bootstrap-daterangepicker -->
 <script src="<?=theme_url();?>/js/moment/moment.min.js"></script>
 <script src="<?=theme_url();?>/js/datepicker/daterangepicker.js"></script>

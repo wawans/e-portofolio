@@ -175,4 +175,51 @@ $(function () {
             });
         }
     });
+
+    $('form[name=fupload]').submit(function(e){
+        e.preventDefault();
+
+        $.ajaxSetup({
+            processData: false,
+            contentType: false
+        });
+        var $form   = $(this),
+            $url    = $form.attr('action'),
+            $loader = $('form[name=ftugas_baru] .loader');
+        var ofile=document.getElementById('filename').files[0];
+        var formdata = new FormData();
+        formdata.append("filename",ofile);
+        $('.parsley-error').removeClass('parsley-error');
+        if (_submited==false) {
+            _submited=true;
+            $loader.html('<i class="fa fa-2x fa-spinner fa-spin"></i> Mengunggah ...');
+            $('.parsley-error-list').remove();
+            $.post($url,formdata, function(data){
+                $loader.html('');
+                if (data.return == '00') {
+                    $('.list-uploaded').append('<ul class="list-unstyled col-md-12 '+data.file_id+' list-inline">'+
+                        '<li><a target="_blank" href="'+data.file_url+'"><i class="fa fa-paperclip"></i> '+data.file_name+'</a></li>'+
+                        '<li><a onclick="$(\'.'+data.file_id+'\').remove();" target="_blank" href="'+data.file_del+'"><i class="fa fa-trash-o"></i> Hapus</a></li>'+
+                    '</ul>'
+                    );
+                    _submited=false;
+                }
+                else if (data.return == '10') {
+                    $.each(data, function (index, result) {
+                        $('input[name="' + index + '"]').addClass('parsley-error').after('<span class="text-danger parsley-error-list">' + result + '</span>');
+                    });
+                    _submited=false;
+                } else if (data.return == '20') {
+                    $loader.html('<span class="text-danger">Gagal! '+data.mesage+'</span>');
+                    _submited=false;
+                } else {
+                    $loader.html('<span class="text-danger">Gagal!</span>');
+                    _submited=false;
+                }
+            },'json').fail(function() {
+                $loader.html('<span class="text-danger">Gagal!</span>');
+                _submited=false;
+            });
+        }
+    });
 });

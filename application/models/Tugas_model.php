@@ -370,8 +370,10 @@ class Tugas_model extends CI_Model {
         if (!$this->is_kelas_exist($kelas_uuid)) return 'Error!';
         $this->load->model('kelas_model');
         $this->kd_kelas = $this->kelas_model->get_kd_kelas($kelas_uuid);
-        return $this->db->where('kd_kelas',$this->kd_kelas)
+        return $this->db->select('*')
+            ->where('kd_kelas',$this->kd_kelas)
             ->where('act','1')
+        ->join('media','media.kd_tugas = tugas_ref.kd_tugas','left')
             ->order_by('tgl_mod', 'DESC')
             ->get('tugas_ref')
             ->result();

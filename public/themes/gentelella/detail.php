@@ -30,28 +30,57 @@
             </ul>
             <br />
             <?php if(isset($tugas)):
-                foreach($tugas as $item): ?>
-            <div class="x_panel" style="height:100%;">
+                foreach($tugas as $item):
+                    $tmp_id = null;
+                    $tmp_lamp = array();
+                    if ($item->lampiran > 1)
+                    {
+                        if ($tmp_id == $item->kd_tugas)
+                        {
+                            array_push($tmp_lamp,$item->filename);
+                            continue;
+                        } else {
+                            $tmp_id = $item->kd_tugas;
+                        }
+
+
+                    } else {
+                        $tmp_id = null;
+                        $tmp_lamp = array();
+                    }
+                    echo $item->kd_tugas;
+                    echo ' -- ';
+                    echo $item->filename;
+                    echo ' <br> ';
+                    echo var_dump($tmp_lamp);
+                    echo ' <br> ';
+                    ?>
+
+            <!--<div class="x_panel" style="height:100%;">
                 <div class="x_title">
-                    <h2><?=$item->judul; ?></h2>
+                    <h2><?/*=$item->judul; */?></h2>
                     <div class="clearfix"></div>
                 </div>
                 <div class="x_content">
                     <label class="byline"><i class="fa fa-tag"></i>
-                        <span>Pada </span><a><?=$item->tgl_awal; ?></a>
-                        <span>Oleh </span><a><?=$item->kd_user; ?></a></label>
+                        <span>Pada </span><a><?/*=$item->tgl_awal; */?></a>
+                        <span>Oleh </span><a><?/*=$item->kd_user; */?></a></label>
                     <article>
-                        <?=$item->konten; ?>
+                        <?/*=$item->konten; */?>
                     </article>
+                    <?php /*if($item->lampiran > 0): */?>
                     <div class="divider-dashed"></div>
                     <ul>
-                        <li><a><i class="fa fa-paperclip"></i> File-name.doc</a></li>
+                        <?php /*for($i=1;$i<=$item->lampiran;$i++): */?>
+                        <li><a><i class="fa fa-paperclip"></i> <?/*=$item->filename; */?></a></li>
+                        <?php /*endfor; */?>
                     </ul>
+                    <?php /*endif; */?>
                     <div class="divider-dashed"></div>
-                    <a class="btn btn-sm btn-primary" href="<?php echo site_url('portofolio/tugas/detail/'.$get_uuid->kd_uuid.'/'.$item->kd_uuid); ?>">Detail</a>
+                    <a class="btn btn-sm btn-primary" href="<?php /*echo site_url('portofolio/tugas/detail/'.$get_uuid->kd_uuid.'/'.$item->kd_uuid); */?>">Detail</a>
                     <div class="clearfix"></div>
                 </div>
-            </div>
+            </div>-->
             <?php endforeach; endif; ?>
             <!--<div class="x_panel" style="height:100%;">
                 <div class="x_title">

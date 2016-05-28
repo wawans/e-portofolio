@@ -202,10 +202,9 @@ $(function () {
                     $('.list-uploaded').append(
                         '<ul class="list-unstyled col-md-12 '+data.raw_name+' list-inline">'+
                         '<li><a target="_blank" href="'+data.file_url+'"><i class="fa fa-paperclip"></i> '+data.file_name+'</a></li>'+
-                        '<li><a class="rm-file" onclick="rm_file(\''+data.raw_name+'\',\''+data.file_name+'\');" data-ul="'+data.raw_name+'" href="javascript:;" data-href="'+data.file_del+'"><i class="fa fa-trash-o"></i> Hapus</a></li>'+
+                        '<li><a class="rm-file" onclick="rm_file(\''+data.raw_name+'\');" data-ul="'+data.raw_name+'" href="javascript:;" data-href="'+data.file_del+'"><i class="fa fa-trash-o"></i> Hapus</a></li>'+
                         '</ul>'
                     );
-                    prop_filelist(data.file_id,'add');
                 } else if (data.return == '20') {
                     $loader.html('<span class="text-danger">Gagal! '+data.mesage+'</span>');
                 } else {
@@ -217,24 +216,8 @@ $(function () {
     });
 
 });
-var rm_file = function(e,f){
+var rm_file = function(e){
     var x = $('[data-ul='+e+']');
     $.post(x.attr('data-href'));
     $('.'+e).remove();
-    prop_filelist(f,'rem');
 };
-var prop_filelist = function($fl,$act) {
-    var el = $('input[name="filelist"]');
-    var ol = el.val();
-    var tr;
-    // set
-    if ($act == 'add') {
-        el.val(ol+$fl+',');
-    }
-    // rem
-    if ($act == 'rem') {
-        // "data-123".replace('data-','');
-        tr = ol.replace($fl+',','');
-        el.val(tr);
-    }
-}

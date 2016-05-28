@@ -50,9 +50,9 @@ class Tugas extends CI_Controller {
         $this->form_validation->set_rules('konten', 'Isi Konten', 'required|trim');
         $this->form_validation->set_rules('tgl_awal', 'Jangka Waktu Awal', 'required|trim|exact_length[10]');
         $this->form_validation->set_rules('tgl_ahir', 'Jangka Waktu Ahir', 'required|trim|exact_length[10]');
-        $this->form_validation->set_rules('jns_grup', 'Grup', 'required|trim|numeric|exact_length[1]');
-        $this->form_validation->set_rules('jns_nilai', 'PeNilai', 'required|trim|numeric|exact_length[1]');
-        $this->form_validation->set_rules('publik', 'Publik', 'required|trim|numeric|exact_length[1]');
+        $this->form_validation->set_rules('jns_grup', 'Grup', 'trim|numeric|exact_length[1]');
+        $this->form_validation->set_rules('jns_nilai', 'PeNilai', 'trim|numeric|exact_length[1]');
+        $this->form_validation->set_rules('publik', 'Publik', 'trim|numeric|exact_length[1]');
         if ($this->form_validation->run() === FALSE)
         {
             $eror = $this->form_validation->error_array();
@@ -63,9 +63,10 @@ class Tugas extends CI_Controller {
         {
             $this->load->model('tugas_model');
             $data = $this->tugas_model->baru($kelas_uuid);
-            if ($data===true)
+            if (is_array($data) && ($data['msg'] == 'ok'))
             {
                 $code['return'] = "00"; // Accepted
+                $code['kode'] = $data['kode'];
                 echo json_encode($code);
             }
             else

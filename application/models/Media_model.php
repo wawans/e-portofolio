@@ -148,15 +148,20 @@ class Media_model extends CI_Model {
         $this->setKdMedia($kode);
     }
 
-    public function simpan($filename)
+    public function simpan($filename,$kd_tugas)
     {
         $this->gen_kd_media();
-        $this->setKdTugas($this->getKdMedia());
+        $this->setKdTugas($kd_tugas);
         $this->setKdUser($this->getProfile()->kd_user);
         $this->setTglUnggah($this->getToday());
         $this->setFilename($filename);
         $this->db->trans_start();
         $this->db->insert('media',$this);
+
+        $this->db->set('lampiran', 'lampiran+1', FALSE);
+        $this->db->where('kd_tugas', $kd_tugas);
+        $this->db->update('tugas_ref');
+
         $this->db->trans_complete();
         return $this->getKdMedia();
     }
@@ -172,6 +177,13 @@ class Media_model extends CI_Model {
 
     public function delete_file($file_id)
     {
+        $kd_tugas = $this->db->select('kd_tugas')
+            ->where('kd_media',$file_id)
+            ->limit(1)
+            ->get('media')->row()->kd_tugas;
+        $this->db->set('lampiran', 'lampiran-1', FALSE);
+        $this->db->where('kd_tugas', $kd_tugas);
+        $this->db->update('tugas_ref');
         $this->db
             ->where('kd_media',$file_id)
             ->where('kd_user',$this->getProfile()->kd_user)

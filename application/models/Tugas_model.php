@@ -329,9 +329,11 @@ class Tugas_model extends CI_Model {
     public function baru($kelas_uuid)
     {
         if (!$this->is_kelas_exist($kelas_uuid)) return 'Error!';
+        $file = 0;
         $this->gen_kd_tugas();
         $this->gen_kd_uuid();
         $this->load->model('kelas_model');
+        $this->load->model('media_model');
         $this->kd_kelas = $this->kelas_model->get_kd_kelas($kelas_uuid);
         $this->kd_user = $this->profile->kd_user;
         $this->judul = $this->input->post('judul');
@@ -339,14 +341,28 @@ class Tugas_model extends CI_Model {
         $this->jns_grup = $this->input->post('jns_grup');
         $this->jns_nilai = $this->input->post('jns_nilai');
         $this->tgl_awal = $this->input->post('tgl_awal');
-        $this->tgl_akhir = $this->input->post('tgl_ahir').' 23:59:59';
+        $this->tgl_akhir = $this->input->post('tgl_ahir',false).' 23:59:59';
         $this->act = $this->input->post('publik');
         $this->tgl_buat = $this->today;
         $this->tgl_mod = $this->today;
+        $lmap = $this->input->post('filelist');
         $this->db->trans_start();
+        if (isset($lmap))
+        {
+            $impl = explode(',',$lmap);
+            foreach ($impl as $filename)
+            {
+                if ($filename != '')
+                {
+                    $this->media_model->simpan($filename,$this->getKdTugas());
+                    $file++;
+                }
+            }
+        }
+        $this->setLampiran($file);
         $this->db->insert('tugas_ref',$this);
         $this->db->trans_complete();
-        return true;
+        return array('msg'=>'ok', 'kode'=>$this->getKdTugas());
     }
 
     public function daftar_tugas($kelas_uuid)
@@ -356,7 +372,7 @@ class Tugas_model extends CI_Model {
         $this->kd_kelas = $this->kelas_model->get_kd_kelas($kelas_uuid);
         return $this->db->where('kd_kelas',$this->kd_kelas)
             ->where('act','1')
-            ->order_by('tgl_awal', 'DESC')
+            ->order_by('tgl_mod', 'DESC')
             ->get('tugas_ref')
             ->result();
     }

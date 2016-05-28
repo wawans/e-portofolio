@@ -30,7 +30,7 @@
                                 <span class="fa fa-calendar form-control-feedback left" aria-hidden="true"></span>
                             </div>
                             <label class="control-label col-md-1 text-center"> s.d </label>
-                            <div class="col-md-1 xdisplay_inputx form-group has-feedback">
+                            <div class="col-md-3 xdisplay_inputx form-group has-feedback">
                                 <input readonly name="tgl_ahir" value="<?=date('Y-m-d');?>" type="date" class="form-control has-feedback-left">
                                 <span class="fa fa-calendar form-control-feedback left" aria-hidden="true"></span>
                             </div>
@@ -67,38 +67,23 @@
                         <br />
                         <div class="clearfix"></div>
                         <div class="divider-dashed"></div>
-                        <div class="form-inline form-horizontal ">
+                        <p class="text-info"><span class="label label-info"><i class="fa fa-info"></i></span> Anda dapat mengunggah <span class="label label-danger">lampiran</span> setelah tugas disimpan.</p>
+                        <!--<p class="text-info"><span class="label label-info"><i class="fa fa-info"></i></span> Jika tidak ada lampiran, Klik <span class="label label-primary">Baru</span> setelah tugas disimpan.</p>-->
+                        <!--<p class="text-info"><span class="label label-info"><i class="fa fa-info"></i></span> Klik <span class="label label-primary">Baru</span> setelah selesai mengunggah <span class="label label-danger">lampiran</span>.</p>-->
+                        <p class="text-info"><span class="label label-info"><i class="fa fa-info"></i></span> Klik <span class="label label-primary">Baru</span> untuk selesai.</p>
+                        <!--<div class="form-inline form-horizontal ">
                             <label class="control-label left" style="text-align: left !important;">
                                 <button onclick="$('input[name=filename]').trigger('click');" type="button" class="btn btn-primary">Lampirkan Berkas</button>
                             </label>
                             <div class="col-md-8 list-uploaded">
-<!--
-                                <ul class="list-unstyled col-md-12 list-inline">
-                                    <li><a href="javscript:;"><i class="fa fa-paperclip"></i> File-name.doc</a></li>
-                                    <li><a href="javscript:;"><i class="fa fa-trash-o"></i> Hapus</a></li>
-                                </ul>
-                                <ul class="list-unstyled col-md-12 list-inline">
-                                    <li><a href="javscript:;"><i class="fa fa-paperclip"></i> File-name.doc</a></li>
-                                    <li><a href="javscript:;"><i class="fa fa-trash-o"></i> Hapus</a></li>
-                                </ul>-->
-<!--                                <table class="table ">
-                                    <tr>
-                                        <th colspan="2">lam</th>
-                                    </tr>
-                                    <tr>
-                                        <td class="no-border"><a href="javscript:;"><i class="fa fa-paperclip"></i> File-name.doc</a></td>
-                                        <td class="no-border"><a href="javscript:;"><i class="fa fa-trash-o"></i> Hapus</a></td>
-                                    </tr>
-                                    <tr>
-                                        <td><a href="javscript:;"><i class="fa fa-paperclip"></i> File-name.doc</a></td>
-                                        <td><a href="javscript:;"><i class="fa fa-trash-o"></i> Hapus</a></td>
-                                    </tr>
-                                </table>
--->                            </div>
-                        </div>
+                                <input class="form-control" readonly name="filelist" value="">
+                            </div>
+                        </div>-->
                         <div class="clearfix"></div>
-                        <div class="ln_solid"></div>
+                        <div class="divider-dashed"></div>
+                        <button type="reset" onclick="window.location=window.location.href;" class="btn btn-primary">Baru</button>
                         <button id="send" type="submit" class="btn btn-success">Simpan</button>
+                        <a href="#" id="tugas-after-modal" data-toggle="modal" data-target=".tugas-after-modal" class="btn btn-danger">Lampiran</a>
                         <span class="text-info loader"></span>
                     </form>
                 </div>
@@ -108,10 +93,37 @@
 </div>
 
 <!-- Hidden form Upload -->
-<form class="hide hidden" name="fupload" action="<?php echo site_url('portofolio/media/put_file'); ?>" method="post" enctype="multipart/form-data">
+<form class="hide hidden" name="fupload" action="<?php echo site_url('portofolio/media/put_file/save/'); ?>" method="post" enctype="multipart/form-data">
     <input type="file" id="filename" name="filename" onchange="$('form[name=fupload]').submit();" />
 </form>
 <!-- Hidden form Upload -->
+<!-- /modals -->
+<div class="modal fade tugas-after-modal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span>
+                </button>
+                <h4 class="modal-title" id="myModalLabel2">Unggah Lampiran</h4>
+            </div>
+            <div class="modal-body">
+                <button onclick="$('input[name=filename]').trigger('click');" type="button" class="btn col-md-12 btn-primary">Lampirkan Berkas</button>
+                <br/>
+                <div class="col-md-12  list-uploaded">
+
+                </div>
+                <span class="loading-upload"></span>
+            </div>
+
+                <div class="clearfix"></div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Tutup</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+<!-- /modals -->
 <!-- bootstrap-daterangepicker -->
 <script src="<?=theme_url();?>/js/moment/moment.min.js"></script>
 <script src="<?=theme_url();?>/js/datepicker/daterangepicker.js"></script>

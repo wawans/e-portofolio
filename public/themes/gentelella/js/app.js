@@ -4,6 +4,8 @@ $(function () {
     var _submited = false;
     var _timeout = 30000;
     var _loader = '<i class="fa fa-2x fa-spinner fa-spin"></i> Mohon Tunggu ...';
+    var $kd_kelas = '';
+    var $kd_tugas = '';
 
     // init
     $('.page').css('min-height','350px');
@@ -144,7 +146,7 @@ $(function () {
     $('form[name=ftugas_baru]').submit(function(e){
         var $form   = $(this),
             $url    = $form.attr('action'),
-            $loader = $('form[name=fkelas_ikut] .loader');
+            $loader = $('form[name=ftugas_baru] .loader');
         e.preventDefault();
         $('.parsley-error').removeClass('parsley-error');
         if (_submited==false) {
@@ -154,7 +156,9 @@ $(function () {
             $.post($url,$form.serialize(), function(data){
                 $loader.html('');
                 if (data.return == '00') {
-                    window.location = window.location.href;
+                    //window.location = window.location.href;
+                    $loader.html('<span class="text-success">Tersimpan!</span>');
+                    $kd_tugas = data.kode;
                     _submited=false;
                 }
                 else if (data.return == '10') {
@@ -185,41 +189,52 @@ $(function () {
         });
         var $form   = $(this),
             $url    = $form.attr('action'),
-            $loader = $('form[name=ftugas_baru] .loader');
+            $loader = $('.loading-upload');
         var ofile=document.getElementById('filename').files[0];
         var formdata = new FormData();
         formdata.append("filename",ofile);
-        $('.parsley-error').removeClass('parsley-error');
-        if (_submited==false) {
-            _submited=true;
+
             $loader.html('<i class="fa fa-2x fa-spinner fa-spin"></i> Mengunggah ...');
             $('.parsley-error-list').remove();
-            $.post($url,formdata, function(data){
+            $.post($url+'/'+$kd_tugas,formdata, function(data){
                 $loader.html('');
                 if (data.return == '00') {
-                    $('.list-uploaded').append('<ul class="list-unstyled col-md-12 '+data.file_id+' list-inline">'+
+                    $('.list-uploaded').append(
+                        '<ul class="list-unstyled col-md-12 '+data.raw_name+' list-inline">'+
                         '<li><a target="_blank" href="'+data.file_url+'"><i class="fa fa-paperclip"></i> '+data.file_name+'</a></li>'+
-                        '<li><a onclick="$(\'.'+data.file_id+'\').remove();" target="_blank" href="'+data.file_del+'"><i class="fa fa-trash-o"></i> Hapus</a></li>'+
-                    '</ul>'
+                        '<li><a class="rm-file" onclick="rm_file(\''+data.raw_name+'\',\''+data.file_name+'\');" data-ul="'+data.raw_name+'" href="javascript:;" data-href="'+data.file_del+'"><i class="fa fa-trash-o"></i> Hapus</a></li>'+
+                        '</ul>'
                     );
-                    _submited=false;
-                }
-                else if (data.return == '10') {
-                    $.each(data, function (index, result) {
-                        $('input[name="' + index + '"]').addClass('parsley-error').after('<span class="text-danger parsley-error-list">' + result + '</span>');
-                    });
-                    _submited=false;
+                    prop_filelist(data.file_id,'add');
                 } else if (data.return == '20') {
                     $loader.html('<span class="text-danger">Gagal! '+data.mesage+'</span>');
-                    _submited=false;
                 } else {
                     $loader.html('<span class="text-danger">Gagal!</span>');
-                    _submited=false;
                 }
             },'json').fail(function() {
                 $loader.html('<span class="text-danger">Gagal!</span>');
-                _submited=false;
             });
-        }
     });
+
 });
+var rm_file = function(e,f){
+    var x = $('[data-ul='+e+']');
+    $.post(x.attr('data-href'));
+    $('.'+e).remove();
+    prop_filelist(f,'rem');
+};
+var prop_filelist = function($fl,$act) {
+    var el = $('input[name="filelist"]');
+    var ol = el.val();
+    var tr;
+    // set
+    if ($act == 'add') {
+        el.val(ol+$fl+',');
+    }
+    // rem
+    if ($act == 'rem') {
+        // "data-123".replace('data-','');
+        tr = ol.replace($fl+',','');
+        el.val(tr);
+    }
+}

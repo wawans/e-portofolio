@@ -12,17 +12,20 @@
                         <article style="min-height: 150px;"><?= $data_tugas->konten;?></article>
                         <div class="clearfix"></div>
                         <br/>
+                        <?php if ($data_tugas->lampiran > 0): ?>
                         <label class="title">Lampiran</label>
                         <div class="divider-dashed"></div>
                         <div>
                             <nav class="nav">
                                 <ul class="list-unstyled">
-                                    <li><a><i class="fa fa-paperclip"></i> File-name.doc</a></li>
-                                    <li><a><i class="fa fa-paperclip"></i> File-name.doc</a></li>
+                                    <?php foreach ($data_lampiran as $item): ?>
+                                        <li><a href="<?php echo base_url('public/uploads/'.$item->filename);?>" target="_blank"><i class="fa fa-paperclip"></i> <?=$item->filename; ?></a></li>
+                                    <?php endforeach; ?>
                                 </ul>
                             </nav>
 
                         </div>
+                        <?php endif; ?>
                     </div>
 
                 </div>

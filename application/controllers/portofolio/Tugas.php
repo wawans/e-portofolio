@@ -29,7 +29,9 @@ class Tugas extends CI_Controller {
 
     public function detail($kelas_uuid,$tugas_uuid)
     {
+        $this->load->model('media_model');
         $this->data['data_tugas'] = $this->detail_tugas($tugas_uuid);
+        $this->data['data_lampiran'] = $this->media_model->get_by_kd_tugas($this->data['data_tugas']->kd_tugas);
         $this->data['kelas_uuid'] = $kelas_uuid;
         $this->load->view('header',$this->data);
         $this->load->view('menu',$this->data);

@@ -148,6 +148,11 @@ class Media_model extends CI_Model {
         $this->setKdMedia($kode);
     }
 
+    public function get_by_kd_tugas($kd_tugas)
+    {
+        return $this->db->get_where('media',array('kd_tugas'=>$kd_tugas))->result();
+    }
+
     public function simpan($filename,$kd_tugas)
     {
         $this->gen_kd_media();

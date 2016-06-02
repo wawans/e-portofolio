@@ -370,11 +370,28 @@ class Tugas_model extends CI_Model {
         if (!$this->is_kelas_exist($kelas_uuid)) return 'Error!';
         $this->load->model('kelas_model');
         $this->kd_kelas = $this->kelas_model->get_kd_kelas($kelas_uuid);
-        return $this->db->select('*')
+        return $this->db->select('tugas_ref.kd_tugas,
+tugas_ref.kd_uuid,
+tugas_ref.kd_kelas,
+tugas_ref.kd_user,
+tugas_ref.judul,
+tugas_ref.konten,
+tugas_ref.jns_grup,
+tugas_ref.jns_nilai,
+tugas_ref.lampiran,
+tugas_ref.tgl_awal,
+tugas_ref.tgl_akhir,
+tugas_ref.tgl_buat,
+tugas_ref.tgl_mod,
+tugas_ref.act,
+GROUP_CONCAT(
+media.filename) filename')
             ->where('kd_kelas',$this->kd_kelas)
             ->where('act','1')
         ->join('media','media.kd_tugas = tugas_ref.kd_tugas','left')
             ->order_by('tgl_mod', 'DESC')
+            ->group_by(array("tugas_ref.kd_tugas","tugas_ref.kd_uuid","tugas_ref.kd_kelas","tugas_ref.kd_user","tugas_ref.judul","tugas_ref.konten","tugas_ref.jns_grup","tugas_ref.jns_nilai","tugas_ref.lampiran","tugas_ref.tgl_awal","tugas_ref.tgl_akhir","tugas_ref.tgl_buat","tugas_ref.tgl_mod","tugas_ref.act"
+            ))
             ->get('tugas_ref')
             ->result();
     }

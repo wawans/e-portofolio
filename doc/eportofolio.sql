@@ -133,7 +133,7 @@ CREATE TABLE `media` (
   `kd_tugas` char(9) NOT NULL,
   `kd_user` char(9) NOT NULL,
   `tgl_unggah` datetime NOT NULL,
-  `filename` varchar(18) NOT NULL,
+  `filename` varchar(75) NOT NULL,
   PRIMARY KEY (`kd_tugas`,`kd_user`,`kd_media`),
   UNIQUE KEY `filename_UNIQUE` (`filename`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

@@ -326,6 +326,13 @@ class Tugas_model extends CI_Model {
         return ($query->num_rows() > 0) ? true : false;
     }
 
+    public function get_kd_tugas($tugas_uuid)
+    {
+        return $this->db->select('kd_tugas')
+            ->where('kd_uuid',$tugas_uuid)
+            ->limit(1)
+            ->get('tugas_ref')->row()->kd_tugas;
+    }
     public function baru($kelas_uuid)
     {
         if (!$this->is_kelas_exist($kelas_uuid)) return 'Error!';

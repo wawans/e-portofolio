@@ -8,6 +8,7 @@ class Main extends CI_Controller {
         parent::__construct();
         $this->load->library('session');
         $this->session->sess_destroy();
+        session_write_close();
     }
 
 	public function index()

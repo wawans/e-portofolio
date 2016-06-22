@@ -34,14 +34,14 @@
            <div class="col-md-12 col-sm-12 col-xs-12">
                <div class="x_panel">
                    <div class="x_content">
-                       <form>
+                       <form name="ftugas_mine" method="post" action="<?php echo site_url('portofolio/tugas/baru/'.$kelas_uuid); ?>">
                            <div>
-                               <textarea class="form-control" name="jawab"></textarea>
+                               <h2>Unggah Hasil Tugas Anda</h2>
                            </div>
                            <div class="divider-dashed"></div>
                            <div class="form-group">
                                <label class="btn btn-primary">
-                                   <input type="file" accept="application/pdf" name="lampiran">
+                                   <input type="file" name="filename">
                                </label>
                                <input type="submit" name="submit" class="btn btn-success" value="Kirim">
                            </div>

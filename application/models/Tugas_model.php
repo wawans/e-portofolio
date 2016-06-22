@@ -326,6 +326,12 @@ class Tugas_model extends CI_Model {
         return ($query->num_rows() > 0) ? true : false;
     }
 
+    private function is_user_submited($kd_tugas,$kd_user)
+    {
+        $query = $this->db->select('kd_tugas')->get_where('tugas',array('kd_tugas'=>$kd_tugas,'kd_user'=>$kd_user),1);
+        return ($query->num_rows() > 0) ? true : false;
+    }
+
     public function get_kd_tugas($tugas_uuid)
     {
         return $this->db->select('kd_tugas')
@@ -395,7 +401,7 @@ GROUP_CONCAT(
 media.filename) filename')
             ->where('kd_kelas',$this->kd_kelas)
             ->where('act','1')
-        ->join('media','media.kd_tugas = tugas_ref.kd_tugas','left')
+            ->join('media','media.kd_tugas = tugas_ref.kd_tugas','left')
             ->order_by('tgl_mod', 'DESC')
             ->group_by(array("tugas_ref.kd_tugas","tugas_ref.kd_uuid","tugas_ref.kd_kelas","tugas_ref.kd_user","tugas_ref.judul","tugas_ref.konten","tugas_ref.jns_grup","tugas_ref.jns_nilai","tugas_ref.lampiran","tugas_ref.tgl_awal","tugas_ref.tgl_akhir","tugas_ref.tgl_buat","tugas_ref.tgl_mod","tugas_ref.act"
             ))
@@ -410,6 +416,11 @@ media.filename) filename')
         return $this->db->where('kd_uuid',$this->getKdUuid())
             ->get('tugas_ref')
             ->row();
+    }
+
+    public function join($tugas_uuid)
+    {
+
     }
 }
 

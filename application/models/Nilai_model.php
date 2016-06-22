@@ -250,21 +250,52 @@ class Nilai_model extends CI_Model {
         return ($query->num_rows() > 0) ? true : false;
     }
 
+    private function is_user_ternilai($kd_tugas,$kd_user,$kd_penilai)
+    {
+        $query = $this->db->select('kd_nilai')->get_where('nilai',array('kd_tugas'=>$kd_tugas,'kd_user'=>$kd_user,'kd_penilai'=>$kd_penilai),1);
+        return ($query->num_rows() > 0) ? true : false;
+    }
+
     public function menilai($tugas_uuid,$user_uuid)
     {
-
-
         // cek kode tugas benar ada;
         if (!$this->is_tugas_exist($tugas_uuid)) return 'Tugas tidak ditemukan';
         // cek kode user benar ada;
         if (!$this->is_user_exist($user_uuid)) return 'User tidak ditemukan';
 
         $this->load->model('tugas_model');
-        // cek kode tugas sudah pernah di nilai
+
         $this->setKdTugas($this->tugas_model->get_kd_tugas($tugas_uuid));
         $this->setKdUser($this->user_model->get_kd_user($user_uuid));
+        // CEK USER SUDAH MENGERJAKAN / BELUM
+        if ($this->db->select('kd_tugas')->get_where('tugas',array('kd_user'=>$this->getKdUser()),1)->num_rows() < 1)
+            return 'Belum Dikerjakan oleh user yang dinilai';
+        // cek kode tugas sudah pernah di nilai
         $this->setKdPenilai($this->profile->kd_user);
+        if ($this->is_user_ternilai($this->getKdTugas(),$this->getKdUser(),$this->getKdPenilai()))
+            return 'Anda Sudah Menilai User Ini!';
 
+        $this->setTglNilai($this->getToday());
+        $this->setSikap($this->input->post('jns_nilai'));
+        $this->setPengetahuan($this->input->post('jns_nilai'));
+        $this->setKetrampilan($this->input->post('jns_nilai'));
+        $this->setPresentasi($this->input->post('jns_nilai'));
+        // menilai waktu
+        $this->setWaktu($this->db->select('(
+(DATEDIFF(tugas_ref.tgl_akhir,tugas.tanggal)+1)/
+(DATEDIFF(tugas_ref.tgl_akhir,
+tugas_ref.tgl_awal)+1))*100 AS SKOR')->join('tugas','tugas_ref.kd_tugas = tugas.kd_tugas')
+        ->where('tugas_ref.kd_tugas',$this->getKdTugas())
+        ->where('tugas.kd_user',$this->getKdUser())
+        ->get('tugas_ref')
+        ->row()->SKOR
+        );
+        // NO ERROR, Simpan.
+        $this->gen_kd_nilai();
+        $this->db->trans_start();
+        $this->db->insert('nilai',$this);
+        $this->db->trans_complete();
+        return array('msg'=>'ok');
     }
 
 }

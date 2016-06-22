@@ -111,6 +111,67 @@ class Tugas extends CI_Controller {
         }
     }
 
+    public function join($kelas_uuid,$tugas_uuid)
+    {
+        $error = null;
+        // prepare validation before upload
+        $this->load->model('tugas_model');
+        // cek kode tugas benar ada;
+        if (!$this->tugas_model->is_tugas_exist($tugas_uuid)) $error = 'Tugas tidak ditemukan';
+        $kd_tugas = $this->tugas_model->get_kd_tugas($tugas_uuid);
+        // cek kode kelas benar ada;
+        if (!$this->tugas_model->is_kelas_exist($kelas_uuid)) $error = 'Kelas tidak ditemukan';
+        // CEK USER SUDAH MENGERJAKAN / BELUM
+        if ($this->tugas_model->is_user_submited($kd_tugas,$this->data['profile']->kd_user))
+            $error = 'Anda Sudah Mengerjakan Tugas Ini';
+
+        if (!is_null($error))
+        {
+            $code['return'] = "20"; // Not Acceptable
+            $code['mesage'] = $error;
+            echo json_encode($code);
+        }
+        // send file
+        $config['upload_path']          = FCPATH.'public'.DIRECTORY_SEPARATOR.'uploads'.DIRECTORY_SEPARATOR;
+        $config['allowed_types']        = 'gif|jpg|png|jpeg|doc|docx|pdf|xls|xlsx|ppt|txt|zip|rar|7zip';
+        $config['max_size']             = ini_get('upload_max_filesize')*1024;
+        $config['file_ext_tolower']     = true;
+        $config['encrypt_name']         = true;
+
+        $this->load->library('upload', $config);
+
+        if ( ! $this->upload->do_upload('filename'))
+        {
+            $code['return'] = "20"; // Not Acceptable
+            $code['mesage'] = $this->upload->display_errors();
+            echo json_encode($code);
+            exit;
+        }
+        // no error, save Tugas & Media
+        else
+        {
+            // simpan tugas
+
+
+            // jika eror hapus file , tidak simpan media
+
+
+            // no eror , simpan media
+            $data = $this->upload->data();
+            $this->load->model('media_model');
+            $code['file_id'] = $this->media_model->simpan($data['file_name'],$kd_tugas);
+            $code['file_name'] = $data['orig_name'];
+            $code['raw_name'] = $data['raw_name'];
+            $code['file_url'] = base_url().'public/uploads/'.$data['file_name'];
+            $code['file_del'] = site_url('portofolio/media/drop/id/'.$code['file_id']);
+
+            $code['return'] = "00"; // Accepted
+            echo json_encode($code);
+            exit;
+        }
+
+    }
+
 }
 
 /* End of file Tugas.php */

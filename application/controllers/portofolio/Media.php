@@ -21,7 +21,7 @@ class Media extends CI_Controller {
         $this->load->view('footer',$this->data);
 	}
 
-    public function drop($type = 'id',$file_id)
+    public function drop($type = 'id',$file_id,$bool = false)
     {
         $data = $file_id;
         if ($type=='id')
@@ -35,16 +35,16 @@ class Media extends CI_Controller {
             if (is_really_writable($filepath) && unlink($filepath))
             {
                 if ($type == 'id') $this->media_model->delete_file($file_id);
-                exit('Berkas dihapus!');
+                return ($bool == true) ? true : exit('Berkas dihapus!');
             }
             else
             {
-                exit('Berkas tidak ditemukan!');
+                return ($bool == true) ? false : exit('Berkas tidak ditemukan!');
             }
         }
         else
         {
-            exit('Berkas tidak dapat dihapus!');
+            return ($bool == true) ? false : exit('Berkas tidak dapat dihapus!');
         }
     }
 

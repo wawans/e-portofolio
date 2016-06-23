@@ -420,7 +420,22 @@ media.filename) filename')
 
     public function join($tugas_uuid)
     {
+        // cek kode tugas benar ada;
+        if (!$this->is_tugas_exist($tugas_uuid)) return 'Tugas tidak ditemukan';
 
+        $this->setKdTugas($this->get_kd_tugas($tugas_uuid));
+        $this->setKdUser($this->profile->kd_user);
+        $insert = array('kd_tugas' => $this->getKdTugas(),
+            'kd_user' => $this->getKdUser(),
+            'tanggal' => $this->getToday());
+
+        // CEK USER SUDAH MENGERJAKAN / BELUM
+        if ($this->is_user_submited($this->getKdTugas(),$this->getKdUser()))
+            return 'Anda Sudah Mengerjakan Tugas Ini';
+        $this->db->trans_start();
+        $this->db->insert('tugas',$insert);
+        $this->db->trans_complete();
+        return true;
     }
 }
 

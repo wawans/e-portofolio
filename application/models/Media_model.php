@@ -153,7 +153,7 @@ class Media_model extends CI_Model {
         return $this->db->get_where('media',array('kd_tugas'=>$kd_tugas))->result();
     }
 
-    public function simpan($filename,$kd_tugas)
+    public function simpan($filename,$kd_tugas,$update = true)
     {
         $this->gen_kd_media();
         $this->setKdTugas($kd_tugas);
@@ -162,11 +162,11 @@ class Media_model extends CI_Model {
         $this->setFilename($filename);
         $this->db->trans_start();
         $this->db->insert('media',$this);
-
-        $this->db->set('lampiran', 'lampiran+1', FALSE);
-        $this->db->where('kd_tugas', $kd_tugas);
-        $this->db->update('tugas_ref');
-
+        if ($update == true) {
+            $this->db->set('lampiran', 'lampiran+1', FALSE);
+            $this->db->where('kd_tugas', $kd_tugas);
+            $this->db->update('tugas_ref');
+        }
         $this->db->trans_complete();
         return $this->getKdMedia();
     }

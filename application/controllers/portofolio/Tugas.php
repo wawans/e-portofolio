@@ -31,6 +31,7 @@ class Tugas extends CI_Controller {
     {
         $this->load->model('media_model');
         $this->data['data_tugas'] = $this->detail_tugas($tugas_uuid);
+        $this->data['peserta_tugas'] = $this->nilai_tugas_sekelas($kelas_uuid,$tugas_uuid);
         $this->data['data_lampiran'] = $this->media_model->get_by_kd_tugas($this->data['data_tugas']->kd_tugas);
         $this->data['kelas_uuid'] = $kelas_uuid;
         $this->data['tugas_uuid'] = $tugas_uuid;
@@ -101,6 +102,21 @@ class Tugas extends CI_Controller {
     {
         $this->load->model('tugas_model');
         $data = $this->tugas_model->detail_tugas($tugas_uuid);
+        if ($this->input->is_ajax_request())
+        {
+            echo json_encode($data);
+            exit;
+        }
+        else
+        {
+            return $data;
+        }
+    }
+
+    public function nilai_tugas_sekelas($kelas_uuid,$tugas_uuid)
+    {
+        $this->load->model('nilai_model');
+        $data = $this->nilai_model->nilai_tugas_sekelas($kelas_uuid,$tugas_uuid);
         if ($this->input->is_ajax_request())
         {
             echo json_encode($data);

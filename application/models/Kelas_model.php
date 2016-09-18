@@ -332,9 +332,61 @@ krf.kd_kelas
         }
     }
 
-    public function drop_member()
+    public function drop_member($kelas_uuid,$user_uuid)
     {
+        $this->common_init($kelas_uuid);
+        $kd_user = $this->user_model->get_kd_user($user_uuid);
 
+        $query = $this->db->select('kd_kelas')
+            ->distinct()
+            ->from('kelas_ref')
+            ->where('kd_uuid',$this->kd_uuid)
+            ->where('kd_user',$this->kd_user)
+            ->limit(1)
+            ->get();
+
+        if ($query->num_rows() > 0)
+        {
+            $query = $this->db->select('kd_kelas')
+                ->distinct()
+                ->from('kelas')
+                ->where('kd_kelas',$this->kd_kelas)
+                ->where('kd_user',$kd_user)
+                ->limit(1)
+                ->get();
+            if ($query->num_rows() > 0)
+            {
+                $this->db
+                    ->where('kd_kelas',$this->kd_kelas)
+                    ->where('kd_user',$kd_user)
+                    ->delete('kelas');
+                return true;
+            }
+            else
+            {
+                return 'User Tidak Terdaftar di Kelas Ini!';
+            }
+        }
+        else
+        {
+            return 'Gagal! Anda Bukan Author Kelas Ini!';
+        }
+    }
+
+    public function get_kelas_siswa($kelas_uuid)
+    {
+        return $this->db->select('
+`user`.kd_uuid,
+`profile`.kd_user,
+`profile`.nm_awal,
+`profile`.nm_akhir')
+            ->distinct()
+            ->from('kelas_ref')
+            ->join('kelas','kelas_ref.kd_kelas = kelas.kd_kelas')
+            ->join('profile','kelas.kd_user = profile.kd_user')
+            ->join('user','user.kd_user = profile.kd_user')
+            ->where('kelas_ref.kd_uuid',$kelas_uuid)
+            ->get()->result();
     }
 }
 

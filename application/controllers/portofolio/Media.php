@@ -24,7 +24,7 @@ class Media extends CI_Controller {
     public function drop($type = 'id',$file_id)
     {
         $data = $file_id;
-        if ($type=='id')
+        if (($type=='id') || ($type=='tugas'))
         {
             $this->load->model('media_model');
             $data = $this->media_model->get_filename($file_id);
@@ -34,7 +34,13 @@ class Media extends CI_Controller {
             $filepath = FCPATH.'public'.DIRECTORY_SEPARATOR.'uploads'.DIRECTORY_SEPARATOR.$data;
             if (is_really_writable($filepath) && unlink($filepath))
             {
-                if ($type == 'id') $this->media_model->delete_file($file_id);
+                //if ($type == 'id') $this->media_model->delete_file($file_id);
+                if (($type=='id') || ($type=='tugas'))
+                {
+                    $this->media_model->delete_file($file_id,false);
+                    $this->load->model('tugas_model');
+                    $this->tugas_model->join_out($this->media_model->get_kdTugas_byID($file_id));
+                }
                 exit('Berkas dihapus!');
             }
             else

@@ -20,7 +20,7 @@ class Home extends CI_Controller {
 	{
         $this->load->view('header',$this->data);
         $this->load->view('menu',$this->data);
-        $this->load->view('nav-top',$this->data);
+     //   $this->load->view('nav-top',$this->data);
         $this->load->view('home',$this->data);
         $this->load->view('footer',$this->data);
 	}

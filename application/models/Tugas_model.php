@@ -310,7 +310,7 @@ class Tugas_model extends CI_Model {
      * @param $kelas_uuid
      * @return bool
      */
-    private function is_kelas_exist($kelas_uuid)
+    public function is_kelas_exist($kelas_uuid)
     {
         $query = $this->db->select('kd_uuid')->get_where('kelas_ref',array('kd_uuid'=>$kelas_uuid),1);
         return ($query->num_rows() > 0) ? true : false;
@@ -320,13 +320,13 @@ class Tugas_model extends CI_Model {
      * @param $tugas_uuid
      * @return bool
      */
-    private function is_tugas_exist($tugas_uuid)
+    public function is_tugas_exist($tugas_uuid)
     {
         $query = $this->db->select('kd_uuid')->get_where('tugas_ref',array('kd_uuid'=>$tugas_uuid),1);
         return ($query->num_rows() > 0) ? true : false;
     }
 
-    private function is_user_submited($kd_tugas,$kd_user)
+    public function is_user_submited($kd_tugas,$kd_user)
     {
         $query = $this->db->select('kd_tugas')->get_where('tugas',array('kd_tugas'=>$kd_tugas,'kd_user'=>$kd_user),1);
         return ($query->num_rows() > 0) ? true : false;
@@ -420,8 +420,34 @@ media.filename) filename')
 
     public function join($tugas_uuid)
     {
-
+        if (!$this->is_tugas_exist($tugas_uuid)) return 'Error!';
+        $this->kd_tugas = $this->get_kd_tugas($tugas_uuid);
+        if ($this->is_user_submited($this->kd_tugas,$this->profile->kd_user)) return 'Sudah Dikerjakan';
+        $insert = array(
+            'kd_tugas' => $this->kd_tugas,
+            'kd_user' => $this->profile->kd_user,
+            'tanggal' => $this->today
+        );
+        $this->db->trans_start();
+        $this->db->insert('tugas',$insert);
+        $this->db->trans_complete();
+        return true;
     }
+
+    public function join_out($kd_tugas)
+    {
+        if ($this->is_user_submited($kd_tugas,$this->profile->kd_user))
+        {
+        $this->db->trans_start();
+        $this->db->where('kd_tugas',$kd_tugas)
+            ->where('kd_user',$this->profile->kd_user)
+            ->delete('tugas');
+        $this->db->trans_complete();
+        }
+        return true;
+    }
+
+
 }
 
 /* End of file Tugas_model.php */

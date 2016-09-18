@@ -31,7 +31,8 @@ class Tugas extends CI_Controller {
     {
         $this->load->model('media_model');
         $this->data['data_tugas'] = $this->detail_tugas($tugas_uuid);
-        $this->data['data_lampiran'] = $this->media_model->get_by_kd_tugas($this->data['data_tugas']->kd_tugas);
+        $this->data['data_lampiran'] = $this->media_model->lampiran_detail_tugas($this->data['data_tugas']->kd_tugas);
+        $this->data['my_lampiran'] = $this->media_model->lampiran_tugas($this->data['data_tugas']->kd_tugas);
         $this->data['kelas_uuid'] = $kelas_uuid;
         $this->load->view('header',$this->data);
         $this->load->view('menu',$this->data);
@@ -60,6 +61,7 @@ class Tugas extends CI_Controller {
             $eror = $this->form_validation->error_array();
             $code['return'] = "10";
             echo json_encode(array_merge($code,$eror));
+            exit;
         }
         else
         {
@@ -70,12 +72,14 @@ class Tugas extends CI_Controller {
                 $code['return'] = "00"; // Accepted
                 $code['kode'] = $data['kode'];
                 echo json_encode($code);
+                exit;
             }
             else
             {
                 $code['return'] = "20"; // Not Acceptable
                 $code['mesage'] = $data;
                 echo json_encode($code);
+                exit;
             }
         }
         exit;
@@ -130,6 +134,7 @@ class Tugas extends CI_Controller {
             $code['return'] = "20"; // Not Acceptable
             $code['mesage'] = $error;
             echo json_encode($code);
+            exit;
         }
         // send file
         $config['upload_path']          = FCPATH.'public'.DIRECTORY_SEPARATOR.'uploads'.DIRECTORY_SEPARATOR;
@@ -150,27 +155,41 @@ class Tugas extends CI_Controller {
         // no error, save Tugas & Media
         else
         {
-            // simpan tugas
-
-
-            // jika eror hapus file , tidak simpan media
-
-
-            // no eror , simpan media
             $data = $this->upload->data();
-            $this->load->model('media_model');
-            $code['file_id'] = $this->media_model->simpan($data['file_name'],$kd_tugas);
-            $code['file_name'] = $data['orig_name'];
-            $code['raw_name'] = $data['raw_name'];
-            $code['file_url'] = base_url().'public/uploads/'.$data['file_name'];
-            $code['file_del'] = site_url('portofolio/media/drop/id/'.$code['file_id']);
+            // simpan tugas // jika eror hapus file , tidak simpan media
+            $save = $this->tugas_model->join($tugas_uuid);
+            if($save === true)
+            {
+                // no eror , simpan media
+                $this->load->model('media_model');
+                $code['file_id'] = $this->media_model->simpan($data['file_name'],$kd_tugas,false);
+                $code['file_name'] = $data['orig_name'];
+                $code['raw_name'] = $data['raw_name'];
+                $code['file_url'] = base_url().'public/uploads/'.$data['file_name'];
+                $code['file_del'] = site_url('portofolio/media/drop/id/'.$code['file_id']);
 
-            $code['return'] = "00"; // Accepted
-            echo json_encode($code);
+                $code['return'] = "00"; // Accepted
+                echo json_encode($code);
+                exit;
+            }
+            else
+            {
+                $filepath = FCPATH.'public'.DIRECTORY_SEPARATOR.'uploads'.DIRECTORY_SEPARATOR.$data;
+                if (is_really_writable($filepath) && unlink($filepath))
+                {
+                    $save .= '. Berkas dihapus!';
+                }
+                $code['return'] = "20"; // Not Acceptable
+                $code['mesage'] = $save;
+                echo json_encode($code);
+                exit;
+            }
             exit;
         }
 
     }
+
+
 
 }
 

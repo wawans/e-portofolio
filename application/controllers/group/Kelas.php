@@ -31,6 +31,8 @@ class Kelas extends CI_Controller {
     {
         $this->get_all_kelompok(true);
         $this->get_uuid($id_kelas,true);
+        $this->get_kelompok_kelas(true,$id_kelas);
+        $this->get_kelas_siswa(true,$id_kelas);
         $this->load->model('tugas_model');
         $this->data['tugas'] = $this->tugas_model->daftar_tugas($id_kelas);
         $this->load->view('header',$this->data);
@@ -89,7 +91,27 @@ class Kelas extends CI_Controller {
         }
         elseif($local==true)
         {
-            $this->data['all'] = $data;
+            //$this->data['all'] = $data;
+            $this->data[__FUNCTION__] = $data;
+        }
+        else
+        {
+            return $data;
+        }
+    }
+
+    public function get_kelas_siswa($local = false,$kelas_uuid)
+    {
+        $this->load->model('kelas_model');
+        $data = $this->kelas_model->get_kelas_siswa($kelas_uuid);
+        if ($this->input->is_ajax_request())
+        {
+            echo json_encode($data);
+            exit;
+        }
+        elseif($local==true)
+        {
+            $this->data[__FUNCTION__] = $data;
         }
         else
         {
@@ -396,7 +418,32 @@ class Kelas extends CI_Controller {
 
     public function drop_member($kelas_uuid,$member_uuid)
     {
-
+        $this->load->library('form_validation');
+        if (!$this->input->is_ajax_request()) $this->form_validation->set_data(array('kode'=>$kelas_uuid));
+        $this->form_validation->set_rules('kode', 'Kode Kelas', 'required|trim|exact_length[9]|callback_check_uuid_exist');
+        if ($this->form_validation->run() === FALSE)
+        {
+            $eror = $this->form_validation->error_array();
+            $code['return'] = "01";
+            echo json_encode(array_merge($code,$eror));
+        }
+        else
+        {
+            $this->load->model('kelas_model');
+            $data = $this->kelas_model->drop_member($kelas_uuid,$member_uuid);
+            if ($data===true)
+            {
+                $code['return'] = "00"; // Accepted
+                echo json_encode($code);
+            }
+            else
+            {
+                $code['return'] = "01"; // Not Acceptable
+                $code['mesage'] = $data;
+                echo json_encode($code);
+            }
+        }
+        exit;
     }
 }
 

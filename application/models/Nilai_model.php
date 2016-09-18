@@ -298,6 +298,11 @@ tugas_ref.tgl_awal)+1))*100 AS SKOR')->join('tugas','tugas_ref.kd_tugas = tugas.
         return array('msg'=>'ok');
     }
 
+    public function semua_nilaiku($user_uuid)
+    {
+
+    }
+
 }
 
 /* End of file Nilai_model.php */

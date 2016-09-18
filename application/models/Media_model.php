@@ -153,7 +153,21 @@ class Media_model extends CI_Model {
         return $this->db->get_where('media',array('kd_tugas'=>$kd_tugas))->result();
     }
 
-    public function simpan($filename,$kd_tugas)
+    public function lampiran_detail_tugas($kd_tugas)
+    {
+        return $this->db->select('media.filename')
+            ->where('tugas_ref.kd_tugas',$kd_tugas)
+            ->join('media','tugas_ref.kd_tugas = media.kd_tugas AND tugas_ref.kd_user = media.kd_user')
+            ->get('tugas_ref')
+            ->result();
+    }
+
+    public function lampiran_tugas($kd_tugas)
+    {
+        return $this->db->get_where('media',array('kd_tugas'=>$kd_tugas,'kd_user'=>$this->getProfile()->kd_user))->row();
+    }
+
+    public function simpan($filename,$kd_tugas,$increment = true)
     {
         $this->gen_kd_media();
         $this->setKdTugas($kd_tugas);
@@ -162,11 +176,12 @@ class Media_model extends CI_Model {
         $this->setFilename($filename);
         $this->db->trans_start();
         $this->db->insert('media',$this);
-
+        if ($increment == true)
+        {
         $this->db->set('lampiran', 'lampiran+1', FALSE);
         $this->db->where('kd_tugas', $kd_tugas);
         $this->db->update('tugas_ref');
-
+        }
         $this->db->trans_complete();
         return $this->getKdMedia();
     }
@@ -180,15 +195,26 @@ class Media_model extends CI_Model {
         return ($last->num_rows() < 1) ? false : $last->row()->filename;
     }
 
-    public function delete_file($file_id)
+    public function get_kdTugas_byID($file_id)
+    {
+        $last = $this->db->select('kd_tugas')
+            ->where('kd_media',$file_id)
+            ->limit(1)
+            ->get('media');
+        return ($last->num_rows() < 1) ? false : $last->row()->kd_tugas;
+    }
+
+    public function delete_file($file_id,$increment = true)
     {
         $kd_tugas = $this->db->select('kd_tugas')
             ->where('kd_media',$file_id)
             ->limit(1)
             ->get('media')->row()->kd_tugas;
-        $this->db->set('lampiran', 'lampiran-1', FALSE);
-        $this->db->where('kd_tugas', $kd_tugas);
-        $this->db->update('tugas_ref');
+        if ($increment == true) {
+            $this->db->set('lampiran', 'lampiran-1', FALSE);
+            $this->db->where('kd_tugas', $kd_tugas);
+            $this->db->update('tugas_ref');
+        }
         $this->db
             ->where('kd_media',$file_id)
             ->where('kd_user',$this->getProfile()->kd_user)

@@ -8,7 +8,8 @@ class Media_model extends CI_Model {
     public $kd_tugas;
     public $kd_user;
     public $tgl_unggah;
-    public $filename;
+    public $file;
+    public $name;
 
     public function __construct()
     {
@@ -24,11 +25,43 @@ class Media_model extends CI_Model {
     }
 
     /**
+     * @param mixed $name
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * @param mixed $file
+     */
+    public function setFile($file)
+    {
+        $this->file = $file;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getFile()
+    {
+        return $this->file;
+    }
+
+    /**
      * @param mixed $filename
      */
     public function setFilename($filename)
     {
-        $this->filename = $filename;
+        $this->name = $filename;
     }
 
     /**
@@ -36,7 +69,7 @@ class Media_model extends CI_Model {
      */
     public function getFilename()
     {
-        return $this->filename;
+        return $this->name;
     }
 
     /**
@@ -202,6 +235,50 @@ class Media_model extends CI_Model {
             ->limit(1)
             ->get('media');
         return ($last->num_rows() < 1) ? false : $last->row()->kd_tugas;
+    }
+
+    public function save_file($kd_tugas,$file)
+    {
+        // init file;
+        $this->gen_kd_media();
+        $this->setKdTugas($kd_tugas);
+        $this->setKdUser($this->getProfile()->kd_user);
+        $this->setTglUnggah($this->getToday());
+        $this->setName($file['orig_name']);
+        $this->setFile($file['file_name']);
+        // cek apakah uploader sama dengan pembuat tugas_ref ,
+        // jika sama , auto increment file lampiran
+        // jika tidak, lanjut.
+        $query = $this->db->select('kd_uuid')->get_where('tugas_ref',array('kd_tugas'=>$kd_tugas,'kd_user'=>$this->getProfile()->kd_user),1);
+        $increment = ($query->num_rows() > 0) ? true : false;
+        $query1 = $this->db->select('kd_tugas')->get_where('tugas',array('kd_tugas'=>$kd_tugas,'kd_user'=>$this->getProfile()->kd_user),1);
+        $tugas = ($query1->num_rows() > 0) ? true : false;
+        if (($increment == false) && ($tugas == true))
+        {
+            return 'Anda Sudah Mengerjakan Tugas Ini';
+        }
+        else
+        {
+            $this->db->trans_start();
+            $this->db->insert('media',$this);
+            if ($increment == true)
+            {
+                $this->db->set('lampiran', 'lampiran+1', FALSE);
+                $this->db->where('kd_tugas', $kd_tugas);
+                $this->db->update('tugas_ref');
+            }
+            elseif ($tugas == false) {
+                $insert = array(
+                    'kd_tugas' => $this->getKdTugas(),
+                    'kd_user' => $this->getProfile()->kd_user,
+                    'tanggal' => $this->getToday()
+                );
+                $this->db->insert('tugas',$insert);
+            }
+            $this->db->trans_complete();
+            return $this->getKdMedia();
+        }
+        exit;
     }
 
     public function delete_file($file_id,$increment = true)

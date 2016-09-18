@@ -21,6 +21,69 @@ class Media extends CI_Controller {
         $this->load->view('footer',$this->data);
 	}
 
+    public function uploader($tugas_uuid) {
+        // gunakan method ini untuk upload lampiran tugas detail , bukan hasil tugas (form individu).
+        // cek apakah tugas uuid sudah ada;
+        $this->load->model(array('media_model','tugas_model'));
+        if ($this->tugas_model->is_tugas_exist($tugas_uuid))
+        {
+            $config['upload_path']          = FCPATH.'public'.DIRECTORY_SEPARATOR.'uploads'.DIRECTORY_SEPARATOR;
+            $config['allowed_types']        = 'gif|jpg|png|jpeg|doc|docx|pdf|xls|xlsx|ppt|txt|zip|rar|7zip';
+            $config['max_size']             = ini_get('upload_max_filesize')*1024;
+            $config['file_ext_tolower']     = true;
+            $config['max_filename']         = 248;
+
+            $this->load->library('upload', $config);
+            if ( ! $this->upload->do_upload('filename'))
+            {
+                $code['return'] = "20"; // Not Acceptable
+                $code['mesage'] = $this->upload->display_errors();
+                echo json_encode($code);
+                exit;
+            }
+            else
+            {
+                $data = $this->upload->data();
+                $kd_tugas = $this->tugas_model->get_kd_tugas($tugas_uuid);
+                $kd_media = $this->media_model->save_file($kd_tugas,$data);
+
+                if (strlen($kd_media) == 9)
+                {
+                    $code['name'] = $data['orig_name'];
+                    $code['file'] = $data['file_name'];
+                    $code['url_file'] = base_url().'public/uploads/'.$data['file_name'];
+                    $code['url_del'] = site_url('portofolio/media/delete/'.$code['kd_media']);
+                    $code['return'] = "00"; // Accepted
+                    echo json_encode($code);
+                    exit;
+                }
+                else
+                {
+                    if (is_really_writable($data['full_path']) && unlink($data['full_path']))
+                    {
+                        $kd_media .= '. Berkas dihapus!';
+                    }
+                    $code['return'] = "20"; // Not Acceptable
+                    $code['mesage'] = $kd_media;
+                    echo json_encode($code);
+                    exit;
+                }
+            }
+        }
+        else
+        {
+            $code['return'] = "20"; // Not Acceptable
+            $code['mesage'] = "Tugas Tidak Valid!";
+            echo json_encode($code);
+            exit;
+        }
+    }
+
+    public function delete($kd_media)
+    {
+
+    }
+
     public function drop($type = 'id',$file_id)
     {
         $data = $file_id;

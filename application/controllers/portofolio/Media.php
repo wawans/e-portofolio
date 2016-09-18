@@ -52,7 +52,8 @@ class Media extends CI_Controller {
                     $code['name'] = $data['orig_name'];
                     $code['file'] = $data['file_name'];
                     $code['url_file'] = base_url().'public/uploads/'.$data['file_name'];
-                    $code['url_del'] = site_url('portofolio/media/delete/'.$code['kd_media']);
+                    $code['url_del'] = site_url('portofolio/media/delete/'.$kd_media);
+                    $code['idx'] = $kd_media;
                     $code['return'] = "00"; // Accepted
                     echo json_encode($code);
                     exit;
@@ -81,7 +82,25 @@ class Media extends CI_Controller {
 
     public function delete($kd_media)
     {
-
+        $this->load->model(array('media_model','tugas_model'));
+        $file = $this->media_model->get_file($kd_media);
+        if (is_object($file))
+        {
+            $filepath = FCPATH.'public'.DIRECTORY_SEPARATOR.'uploads'.DIRECTORY_SEPARATOR.$file->file;
+            if (is_really_writable($filepath) && unlink($filepath))
+            {
+                $this->media_model->delete($kd_media);
+                exit('Berkas dihapus!');
+            }
+            else
+            {
+                exit('Berkas tidak ditemukan!');
+            }
+        }
+        else
+        {
+            exit('error');
+        }
     }
 
     public function drop($type = 'id',$file_id)

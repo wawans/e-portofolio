@@ -3038,7 +3038,8 @@ address.big {
 .error {
     color: #d11149;
 }
-.success {
+.success,
+.text-success {
     color: #0a8754;
 }
 .text-centered {

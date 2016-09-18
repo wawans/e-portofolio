@@ -375,7 +375,7 @@ class Tugas_model extends CI_Model {
         $this->setLampiran($file);
         $this->db->insert('tugas_ref',$this);
         $this->db->trans_complete();
-        return array('msg'=>'ok', 'kode'=>$this->getKdTugas());
+        return array('msg'=>'ok', 'kode'=>$this->getKdTugas(),'uuid'=>$this->getKdUuid());
     }
 
     public function daftar_tugas($kelas_uuid)
@@ -398,7 +398,7 @@ tugas_ref.tgl_buat,
 tugas_ref.tgl_mod,
 tugas_ref.act,
 GROUP_CONCAT(
-media.filename) filename')
+media.file) filename')
             ->where('kd_kelas',$this->kd_kelas)
             ->where('act','1')
             ->join('media','media.kd_tugas = tugas_ref.kd_tugas','left')

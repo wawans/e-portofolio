@@ -188,7 +188,7 @@ class Media_model extends CI_Model {
 
     public function lampiran_detail_tugas($kd_tugas)
     {
-        return $this->db->select('media.filename')
+        return $this->db->select('media.file filename')
             ->where('tugas_ref.kd_tugas',$kd_tugas)
             ->join('media','tugas_ref.kd_tugas = media.kd_tugas AND tugas_ref.kd_user = media.kd_user')
             ->get('tugas_ref')
@@ -237,6 +237,11 @@ class Media_model extends CI_Model {
         return ($last->num_rows() < 1) ? false : $last->row()->kd_tugas;
     }
 
+    public function get_file($kd_media)
+    {
+        return $this->db->get_where('media',array('kd_media'=>$kd_media))->row();
+    }
+
     public function save_file($kd_tugas,$file)
     {
         // init file;
@@ -279,6 +284,35 @@ class Media_model extends CI_Model {
             return $this->getKdMedia();
         }
         exit;
+    }
+
+    public function delete($kd_media)
+    {
+        $kd_tugas = $this->get_kdTugas_byID($kd_media);
+        $query = $this->db->select('kd_uuid')->get_where('tugas_ref',array('kd_tugas'=>$kd_tugas,'kd_user'=>$this->getProfile()->kd_user),1);
+        $increment = ($query->num_rows() > 0) ? true : false;
+        $query1 = $this->db->select('kd_tugas')->get_where('tugas',array('kd_tugas'=>$kd_tugas,'kd_user'=>$this->getProfile()->kd_user),1);
+        $tugas = ($query1->num_rows() > 0) ? true : false;
+        $this->db->trans_start();
+        if (($increment == false) && ($tugas == true))
+        {
+            // milik siswa
+            $this->db->where('kd_tugas',$kd_tugas)
+                ->where('kd_user',$this->profile->kd_user)
+                ->delete('tugas');
+        }
+        else
+        {
+            $this->db->set('lampiran', 'lampiran-1', FALSE)
+                ->where('kd_tugas', $kd_tugas)
+                ->update('tugas_ref');
+        }
+        $this->db
+            ->where('kd_media',$kd_media)
+            ->where('kd_user',$this->getProfile()->kd_user)
+            ->delete('media');
+        $this->db->trans_complete();
+        return true;
     }
 
     public function delete_file($file_id,$increment = true)

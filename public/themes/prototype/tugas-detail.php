@@ -44,16 +44,16 @@
     <br />
     <div class="row">
         <div class="width-100">
-            <form name="fut" enctype="multipart/form-data" method="post" action="<?php echo site_url('portofolio/tugas/join/'.$kelas_uuid.'/'.$data_tugas->kd_uuid); ?>">
+            <form name="fut" enctype="multipart/form-data" method="post" action="<?php echo site_url('portofolio/media/uploader/'.$data_tugas->kd_uuid); ?>">
             <table>
                 <caption class="blue-text">Submission Tugas Anda</caption>
                 <tr>
                     <th>Berkas Terunggah</th>
                     <td class="uploaded-file" id="uploaded-file">
                         <?php if ($my_lampiran): ?>
-                        <a href="<?php echo base_url('public/uploads/'.$my_lampiran->filename);?>" target="_blank"><i class="fa fa-paperclip"></i> <?=$my_lampiran->filename; ?></a>
+                        <a href="<?php echo base_url('public/uploads/'.$my_lampiran->file);?>" target="_blank"><i class="fa fa-paperclip"></i> <?=$my_lampiran->name; ?></a>
                             &mdash;
-                            <em><a class="rm-file" onclick="rm_file('uploaded-file');" data-ul="uploaded-file" href="javascript:;" data-href="<?=site_url('portofolio/media/drop/id/'.$my_lampiran->kd_media);?>"><i class="fa fa-trash-o"></i> Hapus</a></em>
+                            <em><a class="rm-file" onclick="rm_file('uploaded-file');" data-ul="uploaded-file" href="javascript:;" data-href="<?=site_url('portofolio/media/delete/'.$my_lampiran->kd_media);?>"><i class="fa fa-trash-o"></i> Hapus</a></em>
                         <?php else: ?>
                             &mdash;
                         <?php endif; ?>

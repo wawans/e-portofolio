@@ -6,6 +6,7 @@ $(function () {
     var _loader = '<i class="fa fa-2x fa-spinner fa-spin"></i> Mohon Tunggu ...';
     var $kd_kelas = '';
     var $kd_tugas = '';
+    var $kd_uuid = '';
 
     // init
     $('.main_container').css('height', $(window).height());
@@ -82,6 +83,7 @@ $(function () {
     $('#buat-kelas-baru').click(function(){
         $('form[name=fkelas_baru]').show();
         $('.kelas-baru-kode').addClass('hidden');
+        $('.kelas-baru-kode').addClass('hide');
     });
     $('form[name=fkelas_baru]').submit(function(e){
         var $form   = $(this),
@@ -97,6 +99,7 @@ $(function () {
                 if (data.return == '00') {
                     $form.hide();
                     $('.kelas-baru-kode').removeClass('hidden');
+                    $('.kelas-baru-kode').removeClass('hide');
                     $('.kelas-uuid-baru').html(data.uuid);
                 }
                 else if (data.return == '10') {
@@ -160,6 +163,7 @@ $(function () {
                     //window.location = window.location.href;
                     $loader.html('<span class="text-success">Tersimpan!</span>');
                     $kd_tugas = data.kode;
+                    $kd_uuid = data.uuid;
                     _submited=false;
                 }
                 else if (data.return == '10') {
@@ -197,13 +201,13 @@ $(function () {
 
             $loader.html('<i class="fa fa-2x fa-spinner fa-spin"></i> Mengunggah ...');
             $('.parsley-error-list').remove();
-            $.post($url+'/'+$kd_tugas,formdata, function(data){
+            $.post($url+'/'+$kd_uuid,formdata, function(data){
                 $loader.html('');
                 if (data.return == '00') {
                     $('.list-uploaded').append(
-                        '<ul class="list-unstyled col-md-12 '+data.raw_name+' list-inline">'+
-                        '<li><a target="_blank" href="'+data.file_url+'"><i class="fa fa-paperclip"></i> '+data.file_name+'</a></li>'+
-                        '<li><a class="rm-file" onclick="rm_file(\''+data.raw_name+'\');" data-ul="'+data.raw_name+'" href="javascript:;" data-href="'+data.file_del+'"><i class="fa fa-trash-o"></i> Hapus</a></li>'+
+                        '<ul class="list-unstyled col-md-12 '+data.idx+' list-inline">'+
+                        '<li><a target="_blank" href="'+data.url_file+'"><i class="fa fa-paperclip"></i> '+data.name+'</a></li>'+
+                        '<li><a class="rm-file" onclick="rm_file(\''+data.idx+'\');" data-ul="'+data.idx+'" href="javascript:;" data-href="'+data.url_del+'"><i class="fa fa-trash-o"></i> Hapus</a></li>'+
                         '</ul>'
                     );
                 } else if (data.return == '20') {
@@ -232,13 +236,13 @@ $(function () {
 
         $loader.html('<i class="fa fa-2x fa-spinner fa-spin"></i> Mengunggah ...');
         $('.parsley-error-list').remove();
-        $.post($url+'/'+$kd_tugas,formdata, function(data){
+        $.post($url,formdata, function(data){
             $loader.html('');
             if (data.return == '00') {
                 $('.uploaded-file').html(
-                    '<label class="'+data.raw_name+'">'+
-                        '<a target="_blank" href="'+data.file_url+'"><i class="fa fa-paperclip"></i> '+data.file_name+'</a> &mdash;'+
-                        '<em><a class="rm-file" onclick="rm_file(\''+data.raw_name+'\');" data-ul="'+data.raw_name+'" href="javascript:;" data-href="'+data.file_del+'"><i class="fa fa-trash-o"></i> Hapus</a></em>'+
+                    '<label class="'+data.idx+'">'+
+                        '<a target="_blank" href="'+data.url_file+'"><i class="fa fa-paperclip"></i> '+data.name+'</a> &mdash;'+
+                        '<em><a class="rm-file" onclick="rm_file(\''+data.idx+'\');" data-ul="'+data.idx+'" href="javascript:;" data-href="'+data.url_del+'"><i class="fa fa-trash-o"></i> Hapus</a></em>'+
                         '</label>'
                 );
             } else if (data.return == '20') {

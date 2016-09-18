@@ -71,6 +71,7 @@ class Tugas extends CI_Controller {
             {
                 $code['return'] = "00"; // Accepted
                 $code['kode'] = $data['kode'];
+                $code['uuid'] = $data['uuid'];
                 echo json_encode($code);
                 exit;
             }

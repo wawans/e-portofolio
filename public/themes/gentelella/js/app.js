@@ -214,6 +214,34 @@ $(function () {
                 $loader.html('<span class="text-danger">Gagal!</span>');
             });
     });
+    $('form[name=ftugas_join]').submit(function(e){
+        e.preventDefault();
+        $.ajaxSetup({
+            processData: false,
+            contentType: false
+        });
+        var $form   = $(this),
+            $url    = $form.attr('action'),
+            $loader = $('.loader');
+        var ofile=document.getElementById('filename').files[0];
+        var formdata = new FormData();
+        formdata.append("filename",ofile);
+
+        $loader.html('<i class="fa fa-2x fa-spinner fa-spin"></i> Mengunggah ...');
+        $('.parsley-error-list').remove();
+        $.post($url,formdata, function(data){
+            $loader.html('');
+            if (data.return == '00') {
+                window.location = window.location.href; //-> REFRESH
+            } else if (data.return == '20') {
+                $loader.html('<span class="text-danger">Gagal! '+data.mesage+'</span>');
+            } else {
+                $loader.html('<span class="text-danger">Gagal!</span>');
+            }
+        },'json').fail(function() {
+            $loader.html('<span class="text-danger">Gagal!</span>');
+        });
+    });
 
 });
 var rm_file = function(e){

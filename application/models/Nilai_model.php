@@ -256,6 +256,40 @@ class Nilai_model extends CI_Model {
         return ($query->num_rows() > 0) ? true : false;
     }
 
+    public function nilai_tugas_sekelas($kelas_uuid,$tugas_uuid)
+    {
+        // cek kode tugas benar ada;
+        if (!$this->is_tugas_exist($tugas_uuid)) return 'Tugas tidak ditemukan';
+        $this->load->model('tugas_model');
+        $this->load->model('kelas_model');
+        if (!$this->kelas_model->check_uuid_exist($kelas_uuid)) return 'Kelas tidak ditemukan';
+        return $this->db->select('tugas_ref.kd_uuid tugas_uuid,
+`user`.kd_uuid user_uuid,
+`profile`.nm_awal,
+`profile`.nm_akhir,
+nilai.sikap,
+nilai.pengetahuan,
+nilai.ketrampilan,
+nilai.waktu,
+nilai.presentasi,
+nilai.tgl_nilai,
+media.filename,
+media.tgl_unggah')
+            /*->distinct()*/
+            ->from('kelas_ref')
+            ->join('kelas','kelas_ref.kd_kelas = kelas.kd_kelas','left')
+            ->join('profile','kelas.kd_user = profile.kd_user','left')
+            ->join('tugas_ref','kelas.kd_kelas = tugas_ref.kd_kelas','left')
+            ->join('tugas','tugas.kd_tugas = tugas_ref.kd_tugas AND tugas.kd_user = kelas.kd_user','left')
+            ->join('nilai','nilai.kd_tugas = tugas.kd_tugas AND nilai.kd_user = tugas.kd_user','left')
+            ->join('media','media.kd_tugas = tugas.kd_tugas AND media.kd_user = tugas.kd_user','left')
+            ->join('user','profile.kd_user = user.kd_user')
+            ->where('kelas_ref.kd_uuid',$kelas_uuid)
+            ->where('tugas_ref.kd_uuid',$tugas_uuid)
+            ->order_by('`profile`.nm_awal ASC,`profile`.nm_akhir ASC')
+            ->get()->result();
+    }
+
     public function menilai($tugas_uuid,$user_uuid)
     {
         // cek kode tugas benar ada;

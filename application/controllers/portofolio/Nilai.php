@@ -26,6 +26,11 @@ class Nilai extends CI_Controller {
         $this->load->view('footer',$this->data);
 	}
 
+    public function menilai()
+    {
+        $this->load->view('popup.menilai.php',$this->data);
+    }
+
 
 }
 

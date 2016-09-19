@@ -34,6 +34,7 @@ class Tugas extends CI_Controller {
         $this->data['data_lampiran'] = $this->media_model->lampiran_detail_tugas($this->data['data_tugas']->kd_tugas);
         $this->data['my_lampiran'] = $this->media_model->lampiran_tugas($this->data['data_tugas']->kd_tugas);
         $this->data['kelas_uuid'] = $kelas_uuid;
+        $this->list_participants($kelas_uuid,$tugas_uuid,true);
         $this->load->view('header',$this->data);
         $this->load->view('menu',$this->data);
         $this->load->view('nav-top',$this->data);
@@ -260,6 +261,25 @@ class Tugas extends CI_Controller {
             $code['mesage'] = "Tugas tidak ditemukan!";
             echo json_encode($code);
             exit;
+        }
+    }
+
+    public function list_participants($kelas_uuid,$tugas_uuid,$local = false)
+    {
+        $this->load->model('tugas_model');
+        $data = $this->tugas_model->get_list_participants($kelas_uuid,$tugas_uuid);
+        if ($this->input->is_ajax_request())
+        {
+            echo json_encode($data);
+            exit;
+        }
+        elseif($local==true)
+        {
+            $this->data[__FUNCTION__] = $data;
+        }
+        else
+        {
+            return $data;
         }
     }
 }

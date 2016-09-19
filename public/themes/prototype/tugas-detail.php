@@ -18,7 +18,7 @@
                 </tr>
                 <tr>
                     <th>Valid s.d</th>
-                    <td><?= $data_tugas->tgl_akhir;?></td>
+                    <td><?= $data_tugas->tgl_akhir;?> <em class="red-text"> &mdash; <?= (new DateTime('now')) >= (new DateTime($data_tugas->tgl_akhir))?"Unavailable":"Available";?></em> </td>
                 </tr>
                 <tr>
                     <th>Tipe Tugas</th>
@@ -76,22 +76,47 @@
         <div class="width-100">
             <table>
                 <caption class="blue-text">Hasil</caption>
-                <thead>
+                <thead class="blue-grey white-text lighten-1">
                 <tr>
-                    <th>#</th>
-                    <th>Nama</th>
-                    <th>Tugas</th>
-                    <th>Nilai</th>
+                    <th rowspan="2" class="middle text-centered">#</th>
+                    <th rowspan="2" class="middle">Nama</th>
+                    <th rowspan="2" class="middle">Tugas</th>
+                    <th colspan="6" class="middle text-centered">Nilai</th>
+                    <th rowspan="2" class="middle text-centered"># OPSI #</th>
+                </tr>
+                <tr>
+                    <th>S</th>
+                    <th>P</th>
+                    <th>K</th>
+                    <th>W</th>
+                    <th>%</th>
+                    <th>T</th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
+                <?php if(isset($list_participants)):
+                    $x=1;
+                    foreach ($list_participants as $idx): ?>
+                        <tr id="lp_<?= $idx->kd_user; ?>">
+                            <td class="text-centered"><?= $x; ?></td>
+                            <td><?= $idx->nm_awal.' '.$idx->nm_akhir; ?></td>
+                            <td><a href="<?php echo base_url('public/uploads/'.$idx->file);?>" target="_blank"><i class="fa fa-paperclip"></i> <?=$idx->name; ?></a></td>
+                            <th>0</th>
+                            <th>0</th>
+                            <th>0</th>
+                            <th>0</th>
+                            <th>0</th>
+                            <th>0</th>
+                            <!--td class="text-centered"><button type="button" onclick="window.open('<?= site_url('home'); ?>', '<?= (strpos($this->input->user_agent(),'Chrome') == true) ? "Window" : "_blank" ; ?>','height=400,width=350,menubar=0,status=0,titlebar=0,toolbar=0',true); window.blur(); return false;">Nilai</button></td-->
+                            <td class="text-centered"><button type="button" onclick="var x = window.open('<?= site_url('home'); ?>', 'New Window','height=400,width=350,menubar=0,status=0,titlebar=0,toolbar=0',true); x.focus(); return false;">Nilai</button></td>
+                        </tr>
+                        <?php $x++; endforeach; endif; ?>
                 </tbody>
+                <tfoot>
+                <tr>
+                    <td colspan="10" class="small"><span class="req">*</span> ) S: Sikap , P: Pengetahuan , K: Ketrampilan, W: Waktu, %: Presentasi, T: Total. </td>
+                </tr>
+                </tfoot>
             </table>
         </div>
     </div>

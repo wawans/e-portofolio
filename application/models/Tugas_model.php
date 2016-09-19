@@ -447,7 +447,27 @@ media.file) filename')
         return true;
     }
 
-
+    public function get_list_participants($kelas_uuid,$tugas_uuid)
+    {
+        return $this->db->select('`profile`.nm_awal,
+`profile`.nm_akhir,
+kelas_ref.kd_kelas,
+kelas.kd_user,
+tugas_ref.kd_tugas,
+media.kd_media,
+media.name,
+media.file')
+            ->distinct()
+            ->from('kelas_ref')
+            ->join('kelas','kelas_ref.kd_kelas = kelas.kd_kelas')
+            ->join('profile','kelas.kd_user = profile.kd_user')
+            ->join('tugas_ref','kelas_ref.kd_kelas = tugas_ref.kd_kelas','left')
+            ->join('tugas','tugas_ref.kd_tugas = tugas.kd_tugas AND kelas.kd_user = tugas.kd_user','left')
+            ->join('media','tugas.kd_tugas = media.kd_tugas AND tugas.kd_user = media.kd_user','left')
+            ->where('tugas_ref.kd_uuid',$tugas_uuid)
+            ->order_by('`profile`.nm_awal, `profile`.nm_akhir')
+            ->get()->result();
+    }
 }
 
 /* End of file Tugas_model.php */

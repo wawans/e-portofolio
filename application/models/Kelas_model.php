@@ -145,7 +145,7 @@ krf.kd_kelas
     {
 
         if (!$this->session->has_userdata('uuid')) exit('Error : Unexpected System Error!');
-        
+        if ($this->profile->act == 1) return ' Anda Bukan Guru !.';
         $this->load->model('user_model');        
         $this->kd_user = $this->user_model->get_kd_user($this->session->uuid);
         

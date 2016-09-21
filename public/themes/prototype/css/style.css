@@ -382,7 +382,8 @@ kbd {
     padding-right: 15px;
     padding-left: 15px;
 }
-.row {
+.row,
+.row.inline {
     padding-top: 1px;
     margin-top: -1px;
     display: -webkit-box;
@@ -553,7 +554,7 @@ kbd {
         margin: 0;
         padding: 0;
     }
-    .row {
+    .row:not(.inline) {
         -webkit-flex-direction: column;
         -ms-flex-direction: column;
         flex-direction: column;

@@ -149,6 +149,13 @@ class User_model extends CI_Model {
             ->limit(1)
             ->get('user')->row()->kd_user;
     }
+public function get_kd_uuid($kd_user)
+    {
+        return $this->db->select('kd_uuid')
+            ->where('kd_user',$kd_user)
+            ->limit(1)
+            ->get('user')->row()->kd_uuid;
+    }
 
     public function get_profil($uuid)
     {

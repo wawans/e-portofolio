@@ -90,31 +90,32 @@
                     <th>K</th>
                     <th>W</th>
                     <th>%</th>
-                    <th>T</th>
+                    <th>R</th>
                 </tr>
                 </thead>
                 <tbody>
                 <?php if(isset($list_participants)):
                     $x=1;
+                    $m=count($list_participants);
                     foreach ($list_participants as $idx): ?>
                         <tr id="lp_<?= $idx->kd_user; ?>">
                             <td class="text-centered"><?= $x; ?></td>
                             <td><?= $idx->nm_awal.' '.$idx->nm_akhir; ?></td>
                             <td><a href="<?php echo base_url('public/uploads/'.$idx->file);?>" target="_blank"><i class="fa fa-paperclip"></i> <?=$idx->name; ?></a></td>
-                            <th>0</th>
-                            <th>0</th>
-                            <th>0</th>
-                            <th>0</th>
-                            <th>0</th>
-                            <th>0</th>
+                            <th><?= $idx->sikap; ?></th>
+                            <th><?= $idx->pengetahuan; ?></th>
+                            <th><?= $idx->ketrampilan; ?></th>
+                            <th><?= $idx->waktu; ?></th>
+                            <th><?= $idx->presentasi; ?></th>
+                            <th><?= number_format((($idx->sikap+$idx->pengetahuan+$idx->ketrampilan+$idx->waktu+$idx->presentasi)/5),1,',','.') ?></th>
                             <!--td class="text-centered"><button type="button" onclick="window.open('<?= site_url('home'); ?>', '<?= (strpos($this->input->user_agent(),'Chrome') == true) ? "Window" : "_blank" ; ?>','height=400,width=350,menubar=0,status=0,titlebar=0,toolbar=0',true); window.blur(); return false;">Nilai</button></td-->
-                            <td class="text-centered"><button type="button" onclick="var x = window.open('<?= site_url('portofolio/nilai/menilai'); ?>', 'Form Penilaian','height='+parseInt(document.body.clientHeight*2/3)+',width='+parseInt(document.body.clientWidth/2)+',menubar=0,status=0,titlebar=0,toolbar=0',true); x.focus(); /*x.print();*/ return false;">Nilai</button></td>
+                            <td class="text-centered"><button type="button" onclick="var x = window.open('<?= site_url('portofolio/nilai/menilai/'.$data_tugas->kd_uuid.'/'.$x.'/'.$m); ?>', 'Form Penilaian','height='+parseInt(document.body.clientHeight*2/3)+',width='+parseInt(document.body.clientWidth/2)+',menubar=0,status=0,titlebar=0,toolbar=0',true); x.focus(); /*x.print();*/ return false;">Nilai</button></td>
                         </tr>
                         <?php $x++; endforeach; endif; ?>
                 </tbody>
                 <tfoot>
                 <tr>
-                    <td colspan="10" class="small"><span class="req">*</span> ) S: Sikap , P: Pengetahuan , K: Ketrampilan, W: Waktu, %: Presentasi, T: Total. </td>
+                    <td colspan="10" class="small"><span class="req">*</span> ) S: Sikap , P: Pengetahuan , K: Ketrampilan, W: Waktu, %: Presentasi, R: Rata - rata. </td>
                 </tr>
                 </tfoot>
             </table>

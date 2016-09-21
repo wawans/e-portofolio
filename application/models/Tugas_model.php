@@ -339,6 +339,15 @@ class Tugas_model extends CI_Model {
             ->limit(1)
             ->get('tugas_ref')->row()->kd_tugas;
     }
+
+    public function get_kd_uuid($tugas_kd)
+    {
+        return $this->db->select('kd_uuid')
+            ->where('kd_tugas',$tugas_kd)
+            ->limit(1)
+            ->get('tugas_ref')->row()->kd_uuid;
+    }
+
     public function baru($kelas_uuid)
     {
         if (!$this->is_kelas_exist($kelas_uuid)) return 'Error!';
@@ -447,16 +456,22 @@ media.file) filename')
         return true;
     }
 
-    public function get_list_participants($kelas_uuid,$tugas_uuid)
+    public function get_list_participants($kelas_uuid,$tugas_uuid,$row = null)
     {
-        return $this->db->select('`profile`.nm_awal,
+        $this->db->select('`profile`.nm_awal,
 `profile`.nm_akhir,
 kelas_ref.kd_kelas,
 kelas.kd_user,
 tugas_ref.kd_tugas,
 media.kd_media,
 media.name,
-media.file')
+media.file,
+nilai.kd_nilai,
+ifnull(nilai.sikap,0) sikap,
+ifnull(nilai.pengetahuan,0) pengetahuan,
+ifnull(nilai.ketrampilan,0) ketrampilan,
+ifnull(nilai.waktu,0) waktu,
+ifnull(nilai.presentasi,0) presentasi')
             ->distinct()
             ->from('kelas_ref')
             ->join('kelas','kelas_ref.kd_kelas = kelas.kd_kelas')
@@ -464,8 +479,14 @@ media.file')
             ->join('tugas_ref','kelas_ref.kd_kelas = tugas_ref.kd_kelas','left')
             ->join('tugas','tugas_ref.kd_tugas = tugas.kd_tugas AND kelas.kd_user = tugas.kd_user','left')
             ->join('media','tugas.kd_tugas = media.kd_tugas AND tugas.kd_user = media.kd_user','left')
+            ->join('nilai','tugas.kd_tugas = nilai.kd_tugas AND tugas.kd_user = nilai.kd_user','left')
             ->where('tugas_ref.kd_uuid',$tugas_uuid)
-            ->order_by('`profile`.nm_awal, `profile`.nm_akhir')
+            ->order_by('`profile`.nm_awal, `profile`.nm_akhir');
+        if ($row)
+        {
+            $this->db->limit(1,$row-1);
+        }
+        return $this->db //->get_compiled_select();
             ->get()->result();
     }
 }

@@ -1,5 +1,7 @@
+<div class="wrapper">
+<div class="container pad">
 <div class="row">
-    <div class="col-md-12 col-sm-12 col-xs-12">
+    <div class="width-80 centered">
         <div class="x_panel">
             <div class="x_title">
                 <h2>Daftar Baru</h2>
@@ -77,6 +79,9 @@
                     </div>
                 </form>
             </div>
+        </div>
+    </div>
+</div>     </div>
         </div>
     </div>
 </div>

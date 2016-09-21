@@ -185,6 +185,41 @@ $(function () {
         }
     });
 
+    $('form[name=fnilai_baru]').submit(function(e){
+        var $form   = $(this),
+            $url    = $form.attr('action'),
+            $loader = $('form[name=fnilai_baru] .loader');
+        e.preventDefault();
+        $('.parsley-error').removeClass('parsley-error');
+        if (_submited==false) {
+            _submited=true;
+            $loader.html(_loader);
+            $('.parsley-error-list').remove();
+            $.post($url,$form.serialize(), function(data){
+                $loader.html('');
+                if (data.return == '00') {
+                    $loader.html('<span class="text-success">Tersimpan!</span>');
+                    _submited=false;
+                }
+                else if (data.return == '10') {
+                    $.each(data, function (index, result) {
+                        $('input[name="' + index + '"]').addClass('parsley-error').after('<span class="text-danger parsley-error-list">' + result + '</span>');
+                    });
+                    _submited=false;
+                } else if (data.return == '20') {
+                    $loader.html('<span class="text-danger">Gagal! '+data.mesage+'</span>');
+                    _submited=false;
+                } else {
+                    $loader.html('<span class="text-danger">Gagal!</span>');
+                    _submited=false;
+                }
+            },'json').fail(function() {
+                $loader.html('<span class="text-danger">Gagal!</span>');
+                _submited=false;
+            });
+        }
+    });
+
     $('form[name=fupload]').submit(function(e){
         e.preventDefault();
 

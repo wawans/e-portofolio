@@ -290,6 +290,15 @@ media.tgl_unggah')
             ->get()->result();
     }
 
+    public function simpan($t,$u)
+    {
+        $this->load->model('tugas_model');
+        $t = $this->tugas_model->get_kd_uuid($t);
+        $u = $this->user_model->get_kd_uuid($u);
+
+        return $this->menilai($t,$u);
+    }
+
     public function menilai($tugas_uuid,$user_uuid)
     {
         // cek kode tugas benar ada;
@@ -308,12 +317,16 @@ media.tgl_unggah')
         $this->setKdPenilai($this->profile->kd_user);
         if ($this->is_user_ternilai($this->getKdTugas(),$this->getKdUser(),$this->getKdPenilai()))
             return 'Anda Sudah Menilai User Ini!';
-
+        // cek apakah semua bisa menilai atau hanya guru .
+        $ref = $this->db->select('kd_user,jns_grup,jns_nilai')->where('kd_tugas',$this->getKdTugas())->get('tugas_ref')->row();
+        if (($ref->jns_nilai == 1) && ($ref->kd_user != $this->getKdPenilai()))
+            return 'Hanya Guru yang dapat menilai tugas ini!';
+        // [bug-not yet supported] jika jenis tugas grup maka semua member mendapat nilai yang sama;
         $this->setTglNilai($this->getToday());
-        $this->setSikap($this->input->post('jns_nilai'));
-        $this->setPengetahuan($this->input->post('jns_nilai'));
-        $this->setKetrampilan($this->input->post('jns_nilai'));
-        $this->setPresentasi($this->input->post('jns_nilai'));
+        $this->setSikap((int) $this->input->post('n1'));
+        $this->setPengetahuan((int) $this->input->post('n2'));
+        $this->setKetrampilan((int) $this->input->post('n3'));
+        $this->setPresentasi((int) $this->input->post('n5'));
         // menilai waktu
         $this->setWaktu($this->db->select('(
 (DATEDIFF(tugas_ref.tgl_akhir,tugas.tanggal)+1)/

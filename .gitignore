@@ -28,3 +28,4 @@ user_guide_src/cilexer/pycilexer.egg-info/*
 public/themes/default/css/variables.css
 public/uploads/*
 !public/uploads/index.html
+*.bak

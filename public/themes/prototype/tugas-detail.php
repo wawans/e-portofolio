@@ -109,7 +109,7 @@
                             <th><?= $idx->presentasi; ?></th>
                             <th><?= number_format((($idx->sikap+$idx->pengetahuan+$idx->ketrampilan+$idx->waktu+$idx->presentasi)/5),1,',','.') ?></th>
                             <!--td class="text-centered"><button type="button" onclick="window.open('<?= site_url('home'); ?>', '<?= (strpos($this->input->user_agent(),'Chrome') == true) ? "Window" : "_blank" ; ?>','height=400,width=350,menubar=0,status=0,titlebar=0,toolbar=0',true); window.blur(); return false;">Nilai</button></td-->
-                            <td class="text-centered"><button type="button" onclick="var x = window.open('<?= site_url('portofolio/nilai/menilai/'.$data_tugas->kd_uuid.'/'.$x.'/'.$m); ?>', 'Form Penilaian','height='+parseInt(document.body.clientHeight*2/3)+',width='+parseInt(document.body.clientWidth/2)+',menubar=0,status=0,titlebar=0,toolbar=0',true); x.focus(); /*x.print();*/ return false;">Nilai</button></td>
+                            <td class="text-centered"><?php if($idx->kd_user != $profile->kd_user): ?><button type="button" onclick="var x = window.open('<?= site_url('portofolio/nilai/menilai/'.$data_tugas->kd_uuid.'/'.$x.'/'.$m); ?>', 'Form Penilaian','height='+parseInt(document.body.clientHeight*2/3)+',width='+parseInt(document.body.clientWidth/2)+',menubar=0,status=0,titlebar=0,toolbar=0',true); x.focus(); /*x.print();*/ return false;">Nilai</button><?php endif;?></td>
                         </tr>
                         <?php $x++; endforeach; endif; ?>
                 </tbody>

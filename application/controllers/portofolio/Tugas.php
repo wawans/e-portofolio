@@ -9,8 +9,9 @@ class Tugas extends CI_Controller {
         parent::__construct();
         $this->load->library('session');
         if (!$this->session->has_userdata('uuid')) redirect(base_url());
-        $this->load->model('user_model');
+        $this->load->model(array('user_model','kelas_model'));
         $this->data['profile'] = $this->user_model->get_profil($this->session->uuid);
+        $this->data['my_kelas'] = $this->kelas_model->get_current();
     }
 
 	/**
@@ -23,7 +24,7 @@ class Tugas extends CI_Controller {
         $this->load->view('header',$this->data);
         $this->load->view('menu',$this->data);
         $this->load->view('nav-top',$this->data);
-        $this->load->view('tugas',$this->data);
+        $this->load->view('tugas-baru',$this->data);
         $this->load->view('footer',$this->data);
 	}
 

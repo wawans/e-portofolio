@@ -8,8 +8,9 @@ class Home extends CI_Controller {
     {
         parent::__construct();
         $this->load->library('session');
-        $this->load->model('user_model');
+        $this->load->model(array('user_model','kelas_model'));
         $this->data['profile'] = $this->user_model->get_profil($this->session->uuid);
+        $this->data['my_kelas'] = $this->kelas_model->get_current();
     }
 
 	/**

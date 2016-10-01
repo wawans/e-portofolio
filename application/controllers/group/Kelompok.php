@@ -4,213 +4,53 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class Kelompok extends CI_Controller {
     public $data = array();
 
-    public function __construct() 
+    public function __construct()
     {
         parent::__construct();
         $this->load->library('session');
         if (!$this->session->has_userdata('uuid')) redirect(base_url());
-        $this->load->model('user_model');
+        $this->load->model(array('user_model','kelas_model'));
         $this->data['profile'] = $this->user_model->get_profil($this->session->uuid);
+        $this->data['my_kelas'] = $this->kelas_model->get_current();
     }
 
-	/**
-	 * Index Page for this controller.
-	 *
-	 */
-	public function index()
-	{
+    /**
+     * Index Page for this controller.
+     *
+     */
+    public function index($kelas_uuid)
+    {
         $this->get_all(true);
+        $this->data['kelas_uuid'] = $kelas_uuid;
         $this->load->view('header',$this->data);
         $this->load->view('menu',$this->data);
-        $this->load->view('nav-top',$this->data);
         $this->load->view('Kelompok',$this->data);
         $this->load->view('footer',$this->data);
-	}
-    // kelompok
-    public function get_all($local = false)
-    {
-        $this->load->model('kelompok_model');
-        $data = $this->kelompok_model->get_all_kelompok();
-        if ($this->input->is_ajax_request())
-        {
-            echo json_encode($data);
-            exit;
-        }
-        elseif($local==true)
-        {
-            $this->data['all'] = $data;
-        }
-        else
-        {
-            $this->index();
-        }
-    }
-    // kelas -> hanya untuk development !important.
-    public function get_all_kelas($local = false)
-    {
-        $this->load->model('kelas_model');
-        $data = $this->kelas_model->get_all();
-        if ($this->input->is_ajax_request())
-        {
-            echo json_encode($data);
-            exit;
-        }
-        elseif($local==true)
-        {
-            $this->data['all'] = $data;
-        }
-        else
-        {
-            $this->index();
-        }
     }
 
-    // berdasarkan user yg login / yang di ikuti
-    public function get_current()
+    public function detail($kelompok_uuid)
     {
-        $this->load->model('kelompok_model');
-        $data = $this->kelompok_model->get_current();
-        if ($this->input->is_ajax_request())
-        {
-            echo json_encode($data);
-            exit;
-        }
-        else
-        {
-            $this->data['all'] = $data;
-            $this->index();
-        }
-    }
-
-    // data kelas tertentu berdasrkn uuid , return 1;
-    public function get_uuid($uuid)
-    {
-
-    }
-
-    public function get_uuid_member()
-    {
-
-    }
-
-    public function check_uuid_exist($uuid = NULL)
-    {
-        $this->load->library('form_validation');
-        if (!$this->input->is_ajax_request())
-        {
-            $this->form_validation->set_data(array('kode'=>$uuid));
-        }
-        $this->form_validation->set_rules('kode', 'Kode Kelompok', 'required|trim|exact_length[9]');
-        if ($this->form_validation->run() === FALSE)
-        {
-            if ($this->input->is_ajax_request())
-            {
-                $eror = $this->form_validation->error_array();
-                $code['return'] = "01";
-                echo json_encode(array_merge($code,$eror));
-                exit;
-            }
-            else
-            {
-                return false;
-            }
-        }
-        elseif (!isset($uuid))
-        {
-            $this->check_uuid_exist($this->input->post('kode'));
-        }
-        elseif (isset($uuid))
-        {
-            $this->load->model('kelompok_model');
-            $data = $this->kelompok_model->check_uuid_exist($uuid);
-            if ($data===true && $this->input->is_ajax_request())
-            {
-                echo json_encode(array('return' => '00'));
-                exit;
-            }
-            else
-            {
-                if ($data===true)
-                {
-                    return true;
-                }
-                else
-                {
-                    $this->form_validation->set_message('check_uuid_exist', 'The {field} value is not exist');
-                    return false;
-                }
-            }
-        }
-        else
-        {
-            return false;
-        }
-    }
-public function check_kelas_uuid_exist($uuid = NULL)
-    {
-        $this->load->library('form_validation');
-        if (!$this->input->is_ajax_request())
-        {
-            $this->form_validation->set_data(array('kelas'=>$uuid));
-        }
-        $this->form_validation->set_rules('kelas', 'Kode Kelas', 'required|trim|exact_length[9]');
-        if ($this->form_validation->run() === FALSE)
-        {
-            if ($this->input->is_ajax_request())
-            {
-                $eror = $this->form_validation->error_array();
-                $code['return'] = "01";
-                echo json_encode(array_merge($code,$eror));
-                exit;
-            }
-            else
-            {
-                return false;
-            }
-        }
-        elseif (!isset($uuid))
-        {
-            $this->check_kelas_uuid_exist($this->input->post('kelas'));
-        }
-        elseif (isset($uuid))
-        {
-            $this->load->model('kelas_model');
-            $data = $this->kelas_model->check_uuid_exist($uuid);
-            if ($data===true && $this->input->is_ajax_request())
-            {
-                echo json_encode(array('return' => '00'));
-                exit;
-            }
-            else
-            {
-                if ($data===true)
-                {
-                    return true;
-                }
-                else
-                {
-                    $this->form_validation->set_message('check_kelas_uuid_exist', 'The {field} value is not exist');
-                    return false;
-                }
-            }
-        }
-        else
-        {
-            return false;
-        }
+        if ($this->is_group_exist($kelompok_uuid)!=true) show_404();
+        $this->get_detail($kelompok_uuid);
+        $this->get_uuid_member($kelompok_uuid);
+        $this->load->view('header',$this->data);
+        $this->load->view('menu',$this->data);
+        $this->load->view('Kelompok-detail',$this->data);
+        $this->load->view('footer',$this->data);
     }
 
     public function create()
     {
         $this->load->library('form_validation');
-        $this->form_validation->set_rules('kelas', 'Kode Kelas', 'required|trim|exact_length[9]|callback_check_kelas_uuid_exist');
-        $this->form_validation->set_rules('nama', 'Nama Kelompok', 'required|trim|min_length[1]|max_length[125]');
+        $this->form_validation->set_rules('kelas', 'Kode Kelas', 'required|trim|exact_length[9]|callback_is_kelas_exist');
+        $this->form_validation->set_rules('nama', 'Nama Kelas', 'required|trim|min_length[1]|max_length[125]');
         $this->form_validation->set_rules('maks', 'Maks', 'required|trim|numeric|max_length[11]');
         if ($this->form_validation->run() === FALSE)
         {
-            $eror = $this->form_validation->error_array();
-            $code['return'] = "01";
-            echo json_encode(array_merge($code,$eror));
+            $error = $this->form_validation->error_array();
+            $code['return'] = "10";
+            echo json_encode(array_merge($code,$error));
+            exit;
         }
         else
         {
@@ -223,32 +63,60 @@ public function check_kelas_uuid_exist($uuid = NULL)
                 echo json_encode($code);
                 exit;
             }
-            $code['return'] = "01"; // Not Acceptable
+            $code['return'] = "20"; // Not Acceptable
             $code['mesage'] = $data;
             echo json_encode($code);
             exit;
         }
-        exit;
     }
 
-    public function join($uuid = null)
+    public function join()
     {
         $this->load->library('form_validation');
-        if (!$this->input->is_ajax_request())
+        $this->form_validation->set_rules('kode', 'Kode Kelompok', 'required|trim|exact_length[9]|callback_is_group_exist');
+        if ($this->form_validation->run() === FALSE)
         {
-            $this->form_validation->set_data(array('kode'=>$uuid));
+            $error = $this->form_validation->error_array();
+            $code['return'] = "10";
+            echo json_encode(array_merge($code,$error));
+            exit;
         }
-        $this->form_validation->set_rules('kode', 'Kode Kelas', 'required|trim|exact_length[9]|callback_check_uuid_exist');
+        else
+        {
+            $this->load->model('kelompok_model');
+            $data = $this->kelompok_model->join();
+            if ($data===true)
+            {
+                $code['return'] = "00"; // Accepted
+                echo json_encode($code);
+                exit;
+            }
+            else
+            {
+                $code['return'] = "20"; // Not Acceptable
+                $code['mesage'] = $data;
+                echo json_encode($code);
+                exit;
+            }
+        }
+
+    }
+
+    public function join_out($kelompok_uuid)
+    {
+        $this->load->library('form_validation');
+        $this->form_validation->set_data(array('kode'=>$kelompok_uuid));
+        $this->form_validation->set_rules('kode', 'Kode Kelompok', 'required|trim|exact_length[9]|callback_is_group_exist');
         if ($this->form_validation->run() === FALSE)
         {
             $eror = $this->form_validation->error_array();
-            $code['return'] = "01";
+            $code['return'] = "10";
             echo json_encode(array_merge($code,$eror));
         }
         else
         {
             $this->load->model('kelompok_model');
-            $data = $this->kelompok_model->join($uuid);
+            $data = $this->kelompok_model->join_out($kelompok_uuid);
             if ($data===true)
             {
                 $code['return'] = "00"; // Accepted
@@ -256,7 +124,7 @@ public function check_kelas_uuid_exist($uuid = NULL)
             }
             else
             {
-                $code['return'] = "01"; // Not Acceptable
+                $code['return'] = "20"; // Not Acceptable
                 $code['mesage'] = $data;
                 echo json_encode($code);
             }
@@ -264,21 +132,21 @@ public function check_kelas_uuid_exist($uuid = NULL)
         exit;
     }
 
-    public function join_out($kelas_uuid)
+    public function drop($kelompok_uuid)
     {
         $this->load->library('form_validation');
-        if (!$this->input->is_ajax_request()) $this->form_validation->set_data(array('kode'=>$kelas_uuid));
-        $this->form_validation->set_rules('kode', 'Kode Kelas', 'required|trim|exact_length[9]|callback_check_uuid_exist');
+        $this->form_validation->set_data(array('kode'=>$kelompok_uuid));
+        $this->form_validation->set_rules('kode', 'Kode Kelompok', 'required|trim|exact_length[9]|callback_is_group_exist');
         if ($this->form_validation->run() === FALSE)
         {
             $eror = $this->form_validation->error_array();
-            $code['return'] = "01";
+            $code['return'] = "10";
             echo json_encode(array_merge($code,$eror));
         }
         else
         {
             $this->load->model('kelompok_model');
-            $data = $this->kelompok_model->join_out($kelas_uuid);
+            $data = $this->kelompok_model->drop($kelompok_uuid);
             if ($data===true)
             {
                 $code['return'] = "00"; // Accepted
@@ -286,7 +154,7 @@ public function check_kelas_uuid_exist($uuid = NULL)
             }
             else
             {
-                $code['return'] = "01"; // Not Acceptable
+                $code['return'] = "20"; // Not Acceptable
                 $code['mesage'] = $data;
                 echo json_encode($code);
             }
@@ -294,74 +162,88 @@ public function check_kelas_uuid_exist($uuid = NULL)
         exit;
     }
 
-    public function update($kelas_uuid = null)
+    public function drop_member($kelompok_uuid,$member_kd)
     {
         $this->load->library('form_validation');
-        if (isset($kelas_uuid)) $this->form_validation->set_data(array('kode'=>$kelas_uuid));
-        $this->form_validation->set_rules('kode', 'Kode Kelas', 'required|trim|exact_length[9]|callback_check_uuid_exist');
-        $this->form_validation->set_rules('nama', 'Nama Kelas', 'required|trim|min_length[3]|max_length[125]');
-        $this->form_validation->set_rules('maks', 'Maks', 'required|trim|numeric|max_length[11]');
+        $this->form_validation->set_data(array('kode'=>$kelompok_uuid));
+        $this->form_validation->set_rules('kode', 'Kode Kelompok', 'required|trim|exact_length[9]|callback_is_group_exist');
         if ($this->form_validation->run() === FALSE)
         {
             $eror = $this->form_validation->error_array();
-            $code['return'] = "01";
+            $code['return'] = "10";
             echo json_encode(array_merge($code,$eror));
+            exit;
         }
         else
         {
             $this->load->model('kelompok_model');
-            $data = $this->kelompok_model->update($kelas_uuid);
+            $data = $this->kelompok_model->drop_member($kelompok_uuid,$member_kd);
             if ($data===true)
             {
                 $code['return'] = "00"; // Accepted
                 echo json_encode($code);
+                exit;
             }
             else
             {
-                $code['return'] = "01"; // Not Acceptable
+                $code['return'] = "20"; // Not Acceptable
                 $code['mesage'] = $data;
                 echo json_encode($code);
+                exit;
             }
         }
-        exit;
     }
 
-    /**
-     * Drop , Only owner & empty kelas member (min 1 , owner) allowed;
-     */
-    public function drop($kelas_uuid=null)
+    public function get_all()
     {
-        $this->load->library('form_validation');
-        if (isset($kelas_uuid)) $this->form_validation->set_data(array('kode'=>$kelas_uuid));
-        $this->form_validation->set_rules('kode', 'Kode Kelas', 'required|trim|exact_length[9]|callback_check_uuid_exist');
-        if ($this->form_validation->run() === FALSE)
+        $this->load->model('kelompok_model');
+        $data = $this->kelompok_model->get_all_kelompok();
+        $this->data['all'] = $data;
+    }
+
+    public function get_detail($uuid)
+    {
+        $this->load->model('kelompok_model');
+        $data = $this->kelompok_model->get_detail($uuid);
+        $this->data[__FUNCTION__] = $data;
+    }
+
+    public function get_uuid_member($kelompok_id)
+    {
+        $this->load->model('kelompok_model');
+        $data = $this->kelompok_model->get_kelompok_member($kelompok_id);
+        $this->data[__FUNCTION__] = $data;
+    }
+
+    public function is_group_exist($uuid)
+    {
+        $this->load->model('kelompok_model');
+        $data = $this->kelompok_model->check_uuid_exist($uuid);
+        if ($data==true)
         {
-            $eror = $this->form_validation->error_array();
-            $code['return'] = "01";
-            echo json_encode(array_merge($code,$eror));
+            return true;
         }
         else
         {
-            $this->load->model('kelompok_model');
-            $data = $this->kelompok_model->drop($kelas_uuid);
-            if ($data===true)
-            {
-                $code['return'] = "00"; // Accepted
-                echo json_encode($code);
-            }
-            else
-            {
-                $code['return'] = "01"; // Not Acceptable
-                $code['mesage'] = $data;
-                echo json_encode($code);
-            }
+            if ($this->load->is_loaded('Form_validation') != false)
+            $this->form_validation->set_message(__FUNCTION__, 'The {field} value is not exist');
+            return false;
         }
-        exit;
     }
 
-    public function drop_member($kelas_uuid,$member_uuid)
+    public function is_kelas_exist($uuid)
     {
-
+        $this->load->model('kelas_model');
+        $data = $this->kelas_model->check_uuid_exist($uuid);
+        if ($data===true)
+        {
+            return true;
+        }
+        else
+        {
+            $this->form_validation->set_message(__FUNCTION__, 'The {field} value is not exist');
+            return false;
+        }
     }
 }
 

@@ -18,24 +18,18 @@
                             </tr>
                             <tr>
                                 <th>Jangka</th>
-                                <td><div class="col-md-3 xdisplay_inputx form-group has-feedback">
-                                        <input readonly name="tgl_awal" value="<?=date('Y-m-d');?>" type="date" class="form-control has-feedback-left">
-                                        <span class="fa fa-calendar form-control-feedback left" aria-hidden="true"></span>
-                                    </div>
-                                    <label class="control-label col-md-1 text-center"> s.d </label>
-                                    <div class="col-md-3 xdisplay_inputx form-group has-feedback">
-                                        <input readonly name="tgl_ahir" value="<?=date('Y-m-d');?>" type="date" class="form-control has-feedback-left">
-                                        <span class="fa fa-calendar form-control-feedback left" aria-hidden="true"></span>
-                                    </div>
+                                <td><input name="tgl_awal" value="<?=date('Y-m-d');?>" type="text" class="form-control has-feedback-left">
+                                    <label class="text-center"> s.d </label>
+                                    <input name="tgl_ahir" value="<?=date('Y-m-d');?>" type="text" class="form-control has-feedback-left">
                                 </td>
                             </tr>
                             <tr>
-                                <th>Grup</th>
+                                <th>Tipe Tugas</th>
                                 <td><div class="radio radio-inline col-md-2">
                                         <label><input name="jns_grup" type="radio" value="1" checked> Individu.</label>
                                     </div>
                                     <div class="radio radio-inline">
-                                        <label><input name="jns_grup" type="radio" value="2"> Guru &amp; Kelompok.</label>
+                                        <label><input name="jns_grup" type="radio" value="2">Kelompok.</label>
                                     </div>
                                 </td>
                             </tr>
@@ -84,7 +78,10 @@
                 </tr>
                 <tr>
                     <th>&nbsp;</th>
-                    <td><div class="col-md-12  list-uploaded">
+                    <td><div class="col-md-12">
+                            <table class="list-uploaded">
+
+                            </table>
 
                         </div>
                         <span class="loading-upload"></span>
@@ -110,21 +107,3 @@
     <input type="file" id="filename" name="filename" onchange="$('form[name=fupload]').submit();" />
 </form>
 <!-- Hidden form Upload -->
-<!-- bootstrap-daterangepicker -->
-<script src="<?=theme_url();?>/js/moment/moment.min.js"></script>
-<script src="<?=theme_url();?>/js/datepicker/daterangepicker.js"></script>
-<!-- bootstrap-wysiwyg -->
-<script>
-
-    $(document).ready(function() {
-        $('input[type=date]').daterangepicker({
-            singleDatePicker: true,
-            minDate: moment(),
-            format: 'YYYY-MM-DD',
-            calender_style: "picker_1"
-        });
-    });
-
-</script>
-<!-- /bootstrap-wysiwyg -->
-

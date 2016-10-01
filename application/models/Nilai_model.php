@@ -321,6 +321,9 @@ media.tgl_unggah')
         $ref = $this->db->select('kd_user,jns_grup,jns_nilai')->where('kd_tugas',$this->getKdTugas())->get('tugas_ref')->row();
         if (($ref->jns_nilai == 1) && ($ref->kd_user != $this->getKdPenilai()))
             return 'Hanya Guru yang dapat menilai tugas ini!';
+        if (($ref->jns_nilai == 2) && ($this->getKdUser() == $this->getKdPenilai()))
+            return 'Anda Tidak Dapat Menilai User Ini!';
+
         // [bug-not yet supported] jika jenis tugas grup maka semua member mendapat nilai yang sama;
         $this->setTglNilai($this->getToday());
         $this->setSikap((int) $this->input->post('n1'));

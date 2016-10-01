@@ -240,10 +240,10 @@ $(function () {
                 $loader.html('');
                 if (data.return == '00') {
                     $('.list-uploaded').append(
-                        '<ul class="list-unstyled col-md-12 '+data.idx+' list-inline">'+
-                        '<li><a target="_blank" href="'+data.url_file+'"><i class="fa fa-paperclip"></i> '+data.name+'</a></li>'+
-                        '<li><a class="rm-file" onclick="rm_file(\''+data.idx+'\');" data-ul="'+data.idx+'" href="javascript:;" data-href="'+data.url_del+'"><i class="fa fa-trash-o"></i> Hapus</a></li>'+
-                        '</ul>'
+                        '<tr class="list-unstyled col-md-12 '+data.idx+' list-inline">'+
+                        '<td><a target="_blank" href="'+data.url_file+'"><i class="fa fa-paperclip"></i> '+data.name+'</a></td>'+
+                        '<td class="red-text"><a class="rm-file" onclick="rm_file(\''+data.idx+'\');" data-ul="'+data.idx+'" href="javascript:;" data-href="'+data.url_del+'"><i class="fa fa-trash-o"></i> Hapus</a></td>'+
+                        '</tr>'
                     );
                 } else if (data.return == '20') {
                     $loader.html('<span class="text-danger">Gagal! '+data.mesage+'</span>');

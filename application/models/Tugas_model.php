@@ -410,7 +410,7 @@ GROUP_CONCAT(
 media.file) filename')
             ->where('kd_kelas',$this->kd_kelas)
             ->where('act','1')
-            ->join('media','media.kd_tugas = tugas_ref.kd_tugas','left')
+            ->join('media','media.kd_tugas = tugas_ref.kd_tugas and media.kd_user = tugas_ref.kd_user','left')
             ->order_by('tgl_mod', 'DESC')
             ->group_by(array("tugas_ref.kd_tugas","tugas_ref.kd_uuid","tugas_ref.kd_kelas","tugas_ref.kd_user","tugas_ref.judul","tugas_ref.konten","tugas_ref.jns_grup","tugas_ref.jns_nilai","tugas_ref.lampiran","tugas_ref.tgl_awal","tugas_ref.tgl_akhir","tugas_ref.tgl_buat","tugas_ref.tgl_mod","tugas_ref.act"
             ))

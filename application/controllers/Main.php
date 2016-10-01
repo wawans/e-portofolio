@@ -18,4 +18,12 @@ class Main extends CI_Controller {
         $this->load->view('login',$data);
         $this->load->view('footer',$data);
 	}
+
+    public function error404()
+    {
+        $data=array();
+        $this->load->view('header',$data);
+        $this->load->view('error-404',$data);
+        $this->load->view('footer',$data);
+    }
 }

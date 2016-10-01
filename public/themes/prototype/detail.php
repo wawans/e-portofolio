@@ -79,7 +79,8 @@
                             <h4 class="modal-title" id="myModalLabel2">Buat Kelompok Baru</h4>
                         </div>
                         <div class="modal-body">
-                            <form name="fkelas_baru" class="form-horizontal form-label-left" method="post" action="<?php echo site_url('group/kelompok/create/');?>" novalidate>
+                            <form name="fkelas_baru" class="form-horizontal form-label-left" method="post" action="<?php echo site_url('group/kelompok/create/');?>">
+                                <input type="hidden" hidden="hidden" class="hidden hide" name="kelas" value="<?= $get_uuid->kd_uuid; ?>">
                                 <div class="item form-group">
                                     <label class="control-label col-md-3 col-sm-3 col-xs-12">Nama Kelompok<span class="required">*</span>
                                     </label>
@@ -167,7 +168,7 @@
                 <?php if(isset($get_kelompok_kelas)):
                 foreach ($get_kelompok_kelas as $idx): ?>
                     <tr>
-                        <td><a href="<?php echo site_url('group/kelas/detail/'.$idx->kl_uuid);?>" class="btn btn-success" style="width: 100%">PILIH</a></td>
+                        <td><a href="<?php echo site_url('group/kelompok/detail/'.$idx->kl_uuid);?>" class="btn btn-success" style="width: 100%">PILIH</a></td>
                         <td><?= $idx->nm_kelompok; ?></td>
                         <td><?= $idx->nm_awal.' '.$idx->nm_akhir; ?></td>
                         <td><?= $idx->cnt.' / '.$idx->maks; ?></td>

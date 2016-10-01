@@ -9,8 +9,9 @@ class Kelas extends CI_Controller {
         parent::__construct();
         $this->load->library('session');
         if (!$this->session->has_userdata('uuid')) redirect(base_url());
-        $this->load->model('user_model');
+        $this->load->model(array('user_model','kelas_model'));
         $this->data['profile'] = $this->user_model->get_profil($this->session->uuid);
+        $this->data['my_kelas'] = $this->kelas_model->get_current();
     }
 
 	/**
@@ -29,6 +30,7 @@ class Kelas extends CI_Controller {
 
     public function detail($id_kelas)
     {
+        if (!$this->check_uuid_exist($id_kelas,true)) show_404();
         $this->get_all_kelompok(true);
         $this->get_uuid($id_kelas,true);
         $this->get_kelompok_kelas(true,$id_kelas);

@@ -1,4 +1,8 @@
 /*$(document).ready(function() {*/
+$(window).load(function () {
+    FastClick.attach(document.body);
+});
+
 $(function () {
     // Global Var
     var _submited = false;
